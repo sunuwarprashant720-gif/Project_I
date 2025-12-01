@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - NoteBuddy</title>
+    
+    <style>
+   * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #faf5ff 0%, #fdf2f8 50%, #eff6ff 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 3rem;
+            align-items: start;
+        }
+
+        @media (min-width: 1024px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        /* Left Column */
+        .left-column {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* Welcome Section */
+        h1 {
+            font-size: 2.25rem;
+            font-weight: bold;
+            color: #111827;
+            margin-bottom: 1rem;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: #374151;
+        }
+
+        /* New Composition Button */
+        .new-composition-btn {
+            background: linear-gradient(to right, #a855f7, #ec4899);
+            color: white;
+            padding: 1.5rem 2rem;
+            border: none;
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            width: fit-content;
+        }
+
+        .new-composition-btn:hover {
+            background: linear-gradient(to right, #9333ea, #db2777);
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Recent Projects */
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 1.5rem;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 640px) {
+            .projects-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        /* Project Card */
+        .project-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(4px);
+            border: 1px solid #f3e8ff;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .project-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            border-color: #d8b4fe;
+        }
+
+        .project-icon-wrapper {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .project-icon {
+            width: 4rem;
+            height: 4rem;
+            background: linear-gradient(135deg, #f3e8ff, #fce7f3);
+            border-radius: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+        }
+
+        .project-card:hover .project-icon {
+            transform: scale(1.1);
+        }
+
+        .project-icon svg {
+            width: 2rem;
+            height: 2rem;
+            color: #a855f7;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .project-title {
+            text-align: center;
+            color: #111827;
+            font-size: 0.875rem;
+            font-weight: 500;
+        }
+
+        /* Right Column - Illustration */
+        .right-column {
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (min-width: 1024px) {
+            .right-column {
+                display: flex;
+            }
+        }
+
+        .illustration-container {
+            position: relative;
+            width: 24rem;
+            height: 24rem;
+        }
+
+        .illustration-wrapper {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .illustration-svg {
+            opacity: 0.2;
+        }
+
+        /* Musical Notes */
+        .musical-note {
+            position: absolute;
+            opacity: 0.3;
+        }
+
+        .note-1 {
+            top: 2.5rem;
+            left: 2.5rem;
+            font-size: 2.25rem;
+            animation: bounce 1s infinite;
+        }
+
+        .note-2 {
+            top: 5rem;
+            right: 2.5rem;
+            font-size: 1.875rem;
+            animation: pulse 2s infinite;
+        }
+
+        .note-3 {
+            bottom: 5rem;
+            left: 5rem;
+            font-size: 2.25rem;
+            animation: bounce 1s infinite;
+        }
+
+        .note-4 {
+            bottom: 2.5rem;
+            right: 5rem;
+            font-size: 1.875rem;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(-25%);
+                animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+            }
+            50% {
+                transform: translateY(0);
+                animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 0.3;
+            }
+            50% {
+                opacity: 0.15;
+            }
+        }
+
+        /* SVG Icon Styles */
+        .icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="container">
+        <div class="dashboard-grid">
+            
+            <!-- LEFT COLUMN -->
+            <div class="left-column">
+                
+                <!-- Welcome Section -->
+                <div>
+                    <h1>Welcome !!</h1>
+                    <p class="subtitle">Creating something new everyday!</p>
+                </div>
+
+                <!-- New Composition Button -->
+                <button class="new-composition-btn" onclick="alert('Create new composition')">
+                    <svg class="icon" viewBox="0 0 24 24">
+                        <path d="M12 4v16m8-8H4"></path>
+                    </svg>
+                    New composition
+                </button>
+
+                <!-- Recent Projects Section -->
+                <div>
+                    <h2>Recent projects.</h2>
+                    
+                    <div class="projects-grid">
+                        
+                        <!-- Project Card 1 -->
+                        <div class="project-card" onclick="alert('Opening: Symphony No. 1')">
+                            <div class="project-icon-wrapper">
+                                <div class="project-icon">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <p class="project-title">Symphony No. 1</p>
+                        </div>
+                        
+                        <!-- Project Card 2 -->
+                        <div class="project-card" onclick="alert('Opening: Happy Melody')">
+                            <div class="project-icon-wrapper">
+                                <div class="project-icon">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <p class="project-title">Happy Melody</p>
+                        </div>
+                        
+                        <!-- Project Card 3 -->
+                        <div class="project-card" onclick="alert('Opening: Practice Session')">
+                            <div class="project-icon-wrapper">
+                                <div class="project-icon">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <p class="project-title">Practice Session</p>
+                        </div>
+                        
+                        <!-- Project Card 4 -->
+                        <div class="project-card" onclick="alert('Opening: Jazz Improv')">
+                            <div class="project-icon-wrapper">
+                                <div class="project-icon">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <p class="project-title">Jazz Improv</p>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN - Decorative Illustration -->
+            <div class="right-column">
+                <div class="illustration-container">
+                    <div class="illustration-wrapper">
+                        <!-- SVG Guitar Illustration -->
+                        <svg width="300" height="400" viewBox="0 0 300 400" class="illustration-svg">
+                            <!-- Guitar body -->
+                            <ellipse cx="150" cy="250" rx="100" ry="120" fill="#9333EA" opacity="0.2"/>
+                            <ellipse cx="150" cy="250" rx="80" ry="100" fill="#EC4899" opacity="0.15"/>
+                            
+                            <!-- Guitar neck -->
+                            <rect x="130" y="50" width="40" height="180" fill="#8B5CF6" opacity="0.2"/>
+                            
+                            <!-- Strings -->
+                            <line x1="140" y1="50" x2="140" y2="350" stroke="#9333EA" stroke-width="2" opacity="0.3"/>
+                            <line x1="150" y1="50" x2="150" y2="350" stroke="#9333EA" stroke-width="2" opacity="0.3"/>
+                            <line x1="160" y1="50" x2="160" y2="350" stroke="#9333EA" stroke-width="2" opacity="0.3"/>
+                            
+                            <!-- Decorative ribbon -->
+                            <path d="M 100 200 Q 80 220 100 240 Q 120 260 100 280" fill="none" stroke="#EC4899" stroke-width="3" opacity="0.4"/>
+                            <path d="M 200 200 Q 220 220 200 240 Q 180 260 200 280" fill="none" stroke="#8B5CF6" stroke-width="3" opacity="0.4"/>
+                        </svg>
+                        
+                        <!-- Musical notes floating around -->
+                        <div class="musical-note note-1">🎵</div>
+                        <div class="musical-note note-2">🎶</div>
+                        <div class="musical-note note-3">🎼</div>
+                        <div class="musical-note note-4">♪</div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+</body>
+</html>
