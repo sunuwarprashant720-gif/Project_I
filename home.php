@@ -1,3 +1,12 @@
+<?php
+session_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
+
+include("connect.php");
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -62,7 +71,16 @@
 
     <!-- MAIN CONTENT -->
     <main class="main-content">
-        <h1>Welcome !!</h1>
+        <h1>Welcome <?php
+        if(isset($_SESSION['email'])){
+            $email = $_SESSION['email'];
+            $query = mysqli_query($conn,"SELECT * from users where email = '$email'");
+            while($row=mysqli_fetch_array($query)){
+                echo $row['username'];
+            }
+        }
+        ?>
+        !!</h1>
         <h2>Creating something new everyday!</h2>
 
         <button class="new-composition-btn">+ New composition</button>

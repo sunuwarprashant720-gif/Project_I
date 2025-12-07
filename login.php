@@ -1,4 +1,10 @@
-<<<<<<< HEAD
+<?php
+session_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,7 +21,7 @@
     
     <h2 class  ="login-subtitle">Welcome Back!</h2>
     <p class = "login-description">Login to continue your musical journey</p>
-     <form class="login-form" >
+     <form class="login-form" action = "submit.php" method = "POST">
         
         <!-- Email Field -->
         <div class="login-field">
@@ -25,6 +31,7 @@
             type="email"
             placeholder="you@example.com"
             class="login-input"
+            name="email"
             required
           />
         </div>
@@ -37,6 +44,7 @@
             type="password"
             placeholder="••••••••"
             class="login-input"
+            name="password"
             required
           /><br>
         </div>
@@ -44,7 +52,7 @@
         <!-- Submit Button -->
         <button 
           type="submit"
-          class="login-button" onclick="location.href='home.html'"
+          class="login-button" name = "login"
         >
           Login
         </button>
@@ -52,7 +60,7 @@
 
       <!-- Footer -->
        <div class  ="login-footer">
-    <p>Don't have an account? <a class = "login-footer-link" href="signup.html" >Sign up</a></p>
+    <p>Don't have an account? <a class = "login-footer-link" href="signup.php" >Sign up</a></p>
       </p>
     </div>
   </div>
@@ -61,16 +69,4 @@
 
 
 </body>
-=======
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login page</title>
-</head>
-<body>
-    
-</body>
->>>>>>> 350da4ff4e3cc48fa68b77ff4cd403b67d575d10
 </html>
