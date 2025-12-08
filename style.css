@@ -258,6 +258,14 @@ body {
   text-decoration: underline;
 }
 
+.error {
+    color: red;
+    font-size: 12px;
+    margin-top: 4px;
+    display: block;
+}
+
+
 
 /*Home page styles*/
 /* ---------- GLOBAL ---------- */
