@@ -38,10 +38,10 @@ if($result->num_rows > 0){
         header("Location:home.php");
         exit();
     } else {
-        echo "Incorrect Password";
+        echo "<script>alert('Incorrect Password');</script>" ;
     }
 } else {
-    echo "Email not found";
+   echo "<script>alert('Email not found');</script>";
 }
 }
 ?>
