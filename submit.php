@@ -2,46 +2,82 @@
 
 session_start();
 include'connect.php';
-if(isset($_POST['signUp'])){
-    $userName  =$_POST['username'];
-    $email = $_POST['email'];
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+if (isset($_POST['signUp'])) {
 
+    $username = trim($_POST['username']);
+    $email    = trim($_POST['email']);
+    $password = $_POST['password'];
 
-    $checkEmail = "SELECT * FROM users where email = '$email'";
-    $result = $conn->query($checkEmail);
-    if($result->num_rows>0){
-        echo "Email Address already exists!";
+    // SERVER VALIDATION
+    if (empty($username) || empty($email) || empty($password)) {
+        die("All fields are required");
     }
-    else{
-        $insertQuery = "INSERT INTO users(username,email,password)
-        values('$userName','$email','$password')";
-        if($conn->query($insertQuery)==TRUE){
-            header('location:index.php');
-        }
-        else{
-            echo "Error:".$conn->error;
-        }
+
+    if (!preg_match("/^[A-Za-z][A-Za-z0-9_]{2,15}$/", $username)) {
+        die("Invalid username");
     }
-}
 
-if(isset($_POST['login'])){
-$email = $_POST['email'];
-$password = $_POST['password'];
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        die("Invalid email");
+    }
 
-$sql = "SELECT * FROM users WHERE email = '$email'";
-$result = $conn->query($sql);
-if($result->num_rows > 0){
-    $row = $result->fetch_assoc();
-    if (password_verify($password, $row['password'])){
-        $_SESSION['email'] = $row['email'];
-        header("Location:home.php");
+    if (!preg_match("/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/", $password)) {
+        die("Weak password");
+    }
+
+    $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+
+    // PREPARED STATEMENT (SECURE)
+    $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $stmt->store_result();
+
+    if ($stmt->num_rows > 0) {
+        die("Email already exists");
+    }
+
+    $stmt = $conn->prepare(
+        "INSERT INTO users (username, email, password) VALUES (?, ?, ?)"
+    );
+    $stmt->bind_param("sss", $username, $email, $hashedPassword);
+
+    if ($stmt->execute()) {
+        header("Location: login.php");
         exit();
     } else {
-        echo "<script>alert('Incorrect Password');</script>" ;
+        echo "Registration failed";
     }
-} else {
-   echo "<script>alert('Email not found');</script>";
 }
+
+if (isset($_POST['login'])) {
+
+    $email = trim($_POST['email']);
+    $password = $_POST['password'];
+
+    if (empty($email) || empty($password)) {
+        die("All fields required");
+    }
+
+    $stmt = $conn->prepare("SELECT email, password FROM users WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 1) {
+        $row = $result->fetch_assoc();
+
+        if (password_verify($password, $row['password'])) {
+            $_SESSION['email'] = $row['email'];
+            header("Location: home.php");
+            exit();
+        } else {
+            echo "<script>alert('Incorrect Password');</script>";
+        }
+    } else {
+        echo "<script>alert('Email not found');</script>";
+    }
 }
+
+
 ?>

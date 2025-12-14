@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sheet Music Editor</title>
+    <link rel = "stylesheet" href= "style.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            background: linear-gradient(135deg, #faf5ff 0%, #fdf2f8 50%, #eff6ff 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="editor-container">
+        <!-- Symbol Palette Sidebar -->
+        <div class="symbol-palette">
+            <div class="palette-header">
+                <h2 class="palette-title">
+                    <span>🎵</span>
+                    Symbol Palette
+                </h2>
+                <p class="palette-subtitle">Click a symbol, then click on the staff to place it</p>
+            </div>
+
+            <div class="instructions">
+                <div class="instructions-icon">💡</div>
+                <div class="instructions-text">
+                    <div class="instructions-title">How to use:</div>
+                    <div class="instructions-description">
+                        1. Select a symbol below<br>
+                        2. Click on the staff to place it<br>
+                        3. Click a placed symbol to select/delete
+                    </div>
+                </div>
+            </div>
+
+            <div class="symbol-category">
+                <h3 class="category-title">Notes</h3>
+                <div class="symbols-grid">
+                    <div class="symbol-button" data-symbol="whole" data-type="note">
+                        <div>𝅝</div>
+                        <div class="symbol-label">Whole</div>
+                    </div>
+                    <div class="symbol-button" data-symbol="half" data-type="note">
+                        <div>𝅗𝅥</div>
+                        <div class="symbol-label">Half</div>
+                    </div>
+                    <div class="symbol-button" data-symbol="quarter" data-type="note">
+                        <div>𝅘𝅥</div>
+                        <div class="symbol-label">Quarter</div>
+                    </div>
+                    <!-- Removed: sixteenth, dotted-half, eighth -->
+                </div>
+            </div>
+
+            <div class="symbol-category">
+                <h3 class="category-title">Rests</h3>
+                <div class="symbols-grid">
+                    <div class="symbol-button" data-symbol="whole-rest" data-type="rest">
+                        <div>𝄻</div>
+                        <div class="symbol-label">Whole</div>
+                    </div>
+                    <div class="symbol-button" data-symbol="half-rest" data-type="rest">
+                        <div>𝄼</div>
+                        <div class="symbol-label">Half</div>
+                    </div>
+                    <div class="symbol-button" data-symbol="quarter-rest" data-type="rest">
+                        <div>𝄽</div>
+                        <div class="symbol-label">Quarter</div>
+                    </div>
+                    <!-- Removed: eighth-rest, sixteenth-rest -->
+                </div>
+            </div>
+
+            <div class="symbol-category">
+                <h3 class="category-title">Clefs</h3>
+                <div class="symbols-grid">
+                    <div class="symbol-button" data-symbol="treble-clef" data-type="clef">
+                        <div>𝄞</div>
+                        <div class="symbol-label">Treble</div>
+                    </div>
+                    <div class="symbol-button" data-symbol="bass-clef" data-type="clef">
+                        <div>𝄢</div>
+                        <div class="symbol-label">Bass</div>
+                    </div>
+                    <!-- Removed: alto-clef -->
+                </div>
+            </div>
+
+            <div class="symbol-category">
+                <h3 class="category-title">Time Signatures</h3>
+                <div class="symbols-grid">
+                    <div class="symbol-button" data-symbol="4/4" data-type="time">
+                        <div style="font-size: 1.5rem; line-height: 1;">4<br>4</div>
+                        <div class="symbol-label">Common</div>
+                    </div>
+                    <!-- Removed: 3/4, 6/8 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Editor Area -->
+        <div class="editor-main">
+            <div class="editor-header">
+                <h1 class="editor-title" id="documentTitle">Untitled Composition</h1>
+                <div class="editor-actions">
+                    <button class="action-button" onclick="clearCurrentSheet()">
+                        🗑️ Clear
+                    </button>
+                    <button class="action-button" onclick="saveComposition()">
+                        💾 Save
+                    </button>
+                    <button class="action-button" onclick="loadComposition()">
+                        📂 Load
+                    </button>
+                    <button class="action-button primary" onclick="exportSheet()">
+                        📥 Export
+                    </button>
+                </div>
+            </div>
+
+            <div class="canvas-area">
+                <div class="sheets-container">
+                    <!-- Sheet navigation -->
+                    <div class="sheet-navigation">
+                        <div class="sheet-tabs" id="sheetTabs">
+                            <!-- Sheet tabs will be generated here -->
+                        </div>
+                        <button class="add-sheet-button" onclick="addNewSheet()">
+                            <span>+</span> Add Sheet
+                        </button>
+                    </div>
+                    
+                    <!-- Sheets container -->
+                    <div id="sheetsContainer">
+                        <!-- Sheets will be generated here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="status-bar">
+                <div class="status-left">
+                    <div class="status-item">
+                        <span class="status-indicator"></span>
+                        <span id="symbolCount">0 symbols placed</span>
+                    </div>
+                    <div class="status-item">
+                        <span id="selectedSymbol">No symbol selected</span>
+                    </div>
+                    <div class="status-item">
+                        Sheet: <span id="currentSheetInfo">1/1</span>
+                    </div>
+                </div>
+                <div class="zoom-controls">
+                    <button class="zoom-button" onclick="zoomOut()">−</button>
+                    <span class="zoom-level" id="zoomLevel">100%</span>
+                    <button class="zoom-button" onclick="zoomIn()">+</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Title Modal -->
+    <div class="modal" id="titleModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Edit Composition Details</h3>
+            </div>
+            <div>
+                <label style="display: block; margin-bottom: 0.5rem; color: #6b7280; font-size: 0.875rem;">Title</label>
+                <input type="text" id="titleInput" placeholder="Composition Title">
+                
+                <label style="display: block; margin-bottom: 0.5rem; color: #6b7280; font-size: 0.875rem;">Composer</label>
+                <input type="text" id="composerInput" placeholder="Composer Name">
+            </div>
+            <div class="modal-actions">
+                <button class="action-button" onclick="closeTitleModal()">Cancel</button>
+                <button class="action-button primary" onclick="saveTitleChanges()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let selectedSymbol = null;
+        let zoomLevel = 100;
+        let selectedPlacedSymbol = null;
+        let currentSheetIndex = 0;
+        
+        // Multi-sheet support
+        let sheets = [
+            {
+                id: 1,
+                title: "Sheet 1",
+                symbols: [],
+                staves: 4,
+                metadata: {
+                    title: "Untitled Composition",
+                    composer: "Anonymous"
+                }
+            }
+        ];
+
+        // Symbol definitions (updated to remove requested symbols)
+        const symbolIcons = {
+            'whole': '𝅝',
+            'half': '𝅗𝅥',
+            'quarter': '𝅘𝅥',
+            'whole-rest': '𝄻',
+            'half-rest': '𝄼',
+            'quarter-rest': '𝄽',
+            'treble-clef': '𝄞',
+            'bass-clef': '𝄢',
+            '4/4': '4/4'
+        };
+
+        // Initialize
+        function init() {
+            setupSymbolPalette();
+            generateSheetTabs();
+            renderCurrentSheet();
+            updateStatusBar();
+            
+            // Double-click title to edit
+            document.getElementById('documentTitle').addEventListener('dblclick', openTitleModal);
+        }
+
+        function setupSymbolPalette() {
+            const symbolButtons = document.querySelectorAll('.symbol-button');
+            symbolButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active from all buttons
+                    symbolButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Add active to clicked button
+                    this.classList.add('active');
+                    
+                    // Set selected symbol
+                    selectedSymbol = {
+                        symbol: this.dataset.symbol,
+                        type: this.dataset.type,
+                        icon: symbolIcons[this.dataset.symbol] || this.textContent.trim()
+                    };
+                    
+                    updateStatusBar();
+                });
+            });
+        }
+
+        function generateSheetTabs() {
+            const sheetTabs = document.getElementById('sheetTabs');
+            sheetTabs.innerHTML = '';
+            
+            sheets.forEach((sheet, index) => {
+                const tab = document.createElement('button');
+                tab.className = `sheet-tab ${index === currentSheetIndex ? 'active' : ''}`;
+                tab.textContent = sheet.title;
+                tab.onclick = () => switchToSheet(index);
+                
+                sheetTabs.appendChild(tab);
+            });
+        }
+
+        function renderCurrentSheet() {
+            const sheetsContainer = document.getElementById('sheetsContainer');
+            sheetsContainer.innerHTML = '';
+            
+            const currentSheet = sheets[currentSheetIndex];
+            
+            const sheetContainer = document.createElement('div');
+            sheetContainer.className = 'sheet-container';
+            sheetContainer.dataset.sheetId = currentSheet.id;
+            
+            // Sheet header
+            const sheetHeader = document.createElement('div');
+            sheetHeader.className = 'sheet-header';
+            sheetHeader.innerHTML = `
+                <h2 class="composition-title">${currentSheet.metadata.title}</h2>
+                <p class="composition-subtitle">Composed by <span>${currentSheet.metadata.composer}</span></p>
+            `;
+            sheetContainer.appendChild(sheetHeader);
+            
+            // Staff system
+            const staffSystem = document.createElement('div');
+            staffSystem.className = 'staff-system';
+            staffSystem.id = `staffSystem-${currentSheet.id}`;
+            
+            // Generate staves
+            for (let i = 0; i < currentSheet.staves; i++) {
+                const staff = document.createElement('div');
+                staff.className = 'staff';
+                staff.dataset.staffIndex = i;
+                
+                const staffLines = document.createElement('div');
+                staffLines.className = 'staff-lines';
+                
+                // Create 5 staff lines
+                for (let j = 0; j < 5; j++) {
+                    const line = document.createElement('div');
+                    line.className = 'staff-line';
+                    line.style.top = `${30 + j * 30}px`;
+                    staffLines.appendChild(line);
+                }
+                
+                // Add measures
+                const measureCount = 4;
+                const staffWidth = 1000;
+                const measureWidth = staffWidth / measureCount;
+                
+                for (let m = 0; m <= measureCount; m++) {
+                    const measure = document.createElement('div');
+                    measure.className = m === measureCount ? 'measure final' : 'measure';
+                    measure.style.left = `${m * measureWidth}px`;
+                    staffLines.appendChild(measure);
+                }
+                
+                staff.appendChild(staffLines);
+                staffSystem.appendChild(staff);
+                
+                // Add click handler to staff
+                staff.addEventListener('click', (e) => handleStaffClick(e, currentSheet.id));
+            }
+            
+            sheetContainer.appendChild(staffSystem);
+            
+            // Sheet controls (only visible on hover)
+            const sheetControls = document.createElement('div');
+            sheetControls.className = 'sheet-controls';
+            sheetControls.innerHTML = `
+                <button class="sheet-control-button" onclick="removeCurrentSheet()" title="Remove Sheet">🗑️</button>
+                <button class="sheet-control-button" onclick="duplicateCurrentSheet()" title="Duplicate Sheet">📋</button>
+            `;
+            sheetContainer.appendChild(sheetControls);
+            
+            sheetsContainer.appendChild(sheetContainer);
+            
+            // Render existing symbols
+            renderSheetSymbols(currentSheet.id);
+        }
+
+        function renderSheetSymbols(sheetId) {
+            const currentSheet = sheets.find(s => s.id === sheetId);
+            if (!currentSheet) return;
+            
+            const staffSystem = document.getElementById(`staffSystem-${sheetId}`);
+            if (!staffSystem) return;
+            
+            // Clear existing symbols
+            staffSystem.querySelectorAll('.placed-symbol').forEach(el => el.remove());
+            
+            // Render symbols
+            currentSheet.symbols.forEach(symbolData => {
+                const staff = staffSystem.querySelector(`[data-staff-index="${symbolData.staffIndex}"]`);
+                if (staff) {
+                    placeSymbolOnStaff(staff, symbolData, currentSheet.id);
+                }
+            });
+        }
+
+        function handleStaffClick(e, sheetId) {
+            // Don't place if clicking on an existing symbol
+            if (e.target.closest('.placed-symbol')) {
+                const symbol = e.target.closest('.placed-symbol');
+                selectPlacedSymbol(symbol, sheetId);
+                return;
+            }
+            
+            if (!selectedSymbol) {
+                alert('Please select a symbol from the palette first!');
+                return;
+            }
+            
+            const staff = e.currentTarget;
+            const rect = staff.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            placeSymbol(staff, x, y, sheetId);
+        }
+
+        function placeSymbol(staff, x, y, sheetId) {
+            const symbolId = Date.now();
+            const symbolData = {
+                id: symbolId,
+                type: selectedSymbol.type,
+                symbol: selectedSymbol.symbol,
+                x: x,
+                y: y,
+                staffIndex: parseInt(staff.dataset.staffIndex)
+            };
+            
+            // Add to current sheet
+            const sheetIndex = sheets.findIndex(s => s.id === sheetId);
+            if (sheetIndex !== -1) {
+                sheets[sheetIndex].symbols.push(symbolData);
+                placeSymbolOnStaff(staff, symbolData, sheetId);
+                updateStatusBar();
+            }
+        }
+
+        function placeSymbolOnStaff(staff, symbolData, sheetId) {
+            const symbolElement = document.createElement('div');
+            symbolElement.className = 'placed-symbol';
+            symbolElement.dataset.symbolId = symbolData.id;
+            symbolElement.dataset.symbolType = symbolData.type;
+            symbolElement.dataset.symbolName = symbolData.symbol;
+            symbolElement.dataset.sheetId = sheetId;
+            
+            // Create symbol content
+            const selectedSymbolData = {
+                symbol: symbolData.symbol,
+                type: symbolData.type,
+                icon: symbolIcons[symbolData.symbol] || symbolData.symbol
+            };
+            
+            if (symbolData.symbol === '4/4') {
+                const [top, bottom] = symbolData.symbol.split('/');
+                symbolElement.innerHTML = `
+                    <div style="font-size: 1.5rem; line-height: 1; text-align: center; font-weight: bold;">
+                        ${top}<br>${bottom}
+                    </div>
+                `;
+            } else {
+                symbolElement.innerHTML = `<div style="font-size: 2.5rem;">${selectedSymbolData.icon}</div>`;
+            }
+            
+            // Add delete button
+            const deleteBtn = document.createElement('button');
+            deleteBtn.className = 'delete-button';
+            deleteBtn.innerHTML = '×';
+            deleteBtn.onclick = (e) => {
+                e.stopPropagation();
+                deleteSymbol(symbolElement, sheetId);
+            };
+            symbolElement.appendChild(deleteBtn);
+            
+            // Position the symbol
+            symbolElement.style.left = `${symbolData.x - 20}px`;
+            symbolElement.style.top = `${symbolData.y - 20}px`;
+            
+            staff.querySelector('.staff-lines').appendChild(symbolElement);
+            
+            // Add click handler for selection
+            symbolElement.addEventListener('click', (e) => {
+                e.stopPropagation();
+                selectPlacedSymbol(symbolElement, sheetId);
+            });
+        }
+
+        function selectPlacedSymbol(symbolElement, sheetId) {
+            // Deselect previous
+            if (selectedPlacedSymbol) {
+                selectedPlacedSymbol.classList.remove('selected');
+            }
+            
+            // Select new
+            symbolElement.classList.add('selected');
+            selectedPlacedSymbol = symbolElement;
+        }
+
+        function deleteSymbol(symbolElement, sheetId) {
+            const symbolId = parseInt(symbolElement.dataset.symbolId);
+            const sheetIndex = sheets.findIndex(s => s.id === parseInt(sheetId));
+            
+            if (sheetIndex !== -1) {
+                sheets[sheetIndex].symbols = sheets[sheetIndex].symbols.filter(s => s.id !== symbolId);
+                symbolElement.remove();
+                selectedPlacedSymbol = null;
+                updateStatusBar();
+            }
+        }
+
+        // Sheet Management Functions
+        function addNewSheet() {
+            const newSheetId = sheets.length > 0 ? Math.max(...sheets.map(s => s.id)) + 1 : 1;
+            const newSheet = {
+                id: newSheetId,
+                title: `Sheet ${newSheetId}`,
+                symbols: [],
+                staves: 4,
+                metadata: {
+                    title: sheets[currentSheetIndex]?.metadata?.title || "Untitled Composition",
+                    composer: sheets[currentSheetIndex]?.metadata?.composer || "Anonymous"
+                }
+            };
+            
+            sheets.push(newSheet);
+            currentSheetIndex = sheets.length - 1;
+            
+            generateSheetTabs();
+            renderCurrentSheet();
+            updateStatusBar();
+        }
+
+        function switchToSheet(index) {
+            if (index >= 0 && index < sheets.length) {
+                currentSheetIndex = index;
+                generateSheetTabs();
+                renderCurrentSheet();
+                updateStatusBar();
+            }
+        }
+
+        function removeCurrentSheet() {
+            if (sheets.length <= 1) {
+                alert('Cannot remove the last sheet!');
+                return;
+            }
+            
+            if (confirm('Are you sure you want to remove this sheet?')) {
+                sheets.splice(currentSheetIndex, 1);
+                
+                // If we removed the last sheet, go to previous
+                if (currentSheetIndex >= sheets.length) {
+                    currentSheetIndex = sheets.length - 1;
+                }
+                
+                generateSheetTabs();
+                renderCurrentSheet();
+                updateStatusBar();
+            }
+        }
+
+        function duplicateCurrentSheet() {
+            const currentSheet = sheets[currentSheetIndex];
+            const newSheetId = Math.max(...sheets.map(s => s.id)) + 1;
+            
+            const duplicatedSheet = {
+                id: newSheetId,
+                title: `${currentSheet.title} (Copy)`,
+                symbols: JSON.parse(JSON.stringify(currentSheet.symbols)),
+                staves: currentSheet.staves,
+                metadata: JSON.parse(JSON.stringify(currentSheet.metadata))
+            };
+            
+            sheets.push(duplicatedSheet);
+            currentSheetIndex = sheets.length - 1;
+            
+            generateSheetTabs();
+            renderCurrentSheet();
+            updateStatusBar();
+        }
+
+        function clearCurrentSheet() {
+            if (confirm('Are you sure you want to clear all symbols from this sheet?')) {
+                sheets[currentSheetIndex].symbols = [];
+                renderSheetSymbols(sheets[currentSheetIndex].id);
+                updateStatusBar();
+            }
+        }
+
+        function updateStatusBar() {
+            const currentSheet = sheets[currentSheetIndex];
+            const totalSymbols = sheets.reduce((sum, sheet) => sum + sheet.symbols.length, 0);
+            
+            document.getElementById('symbolCount').textContent = `${totalSymbols} symbols placed (${currentSheet.symbols.length} in current sheet)`;
+            
+            if (selectedSymbol) {
+                document.getElementById('selectedSymbol').textContent = `Selected: ${selectedSymbol.symbol} (${selectedSymbol.type})`;
+            } else {
+                document.getElementById('selectedSymbol').textContent = 'No symbol selected';
+            }
+            
+            document.getElementById('currentSheetInfo').textContent = `${currentSheetIndex + 1}/${sheets.length}`;
+        }
+
+        function saveComposition() {
+            const data = {
+                version: '1.0',
+                metadata: sheets[0]?.metadata || {
+                    title: "Untitled Composition",
+                    composer: "Anonymous"
+                },
+                sheets: sheets,
+                timestamp: new Date().toISOString()
+            };
+            
+            const json = JSON.stringify(data, null, 2);
+            const blob = new Blob([json], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${data.metadata.title.replace(/\s/g, '_')}_composition.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function loadComposition() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                
+                reader.onload = (event) => {
+                    try {
+                        const data = JSON.parse(event.target.result);
+                        
+                        // Load metadata
+                        if (data.metadata) {
+                            sheets.forEach(sheet => {
+                                sheet.metadata = data.metadata;
+                            });
+                            document.getElementById('documentTitle').textContent = data.metadata.title;
+                        }
+                        
+                        // Load sheets
+                        if (data.sheets && Array.isArray(data.sheets)) {
+                            sheets = data.sheets;
+                            currentSheetIndex = 0;
+                        } else if (data.symbols) {
+                            // Legacy format (single sheet)
+                            sheets = [{
+                                id: 1,
+                                title: "Sheet 1",
+                                symbols: data.symbols || [],
+                                staves: 4,
+                                metadata: {
+                                    title: data.title || "Untitled Composition",
+                                    composer: data.composer || "Anonymous"
+                                }
+                            }];
+                            currentSheetIndex = 0;
+                        }
+                        
+                        generateSheetTabs();
+                        renderCurrentSheet();
+                        updateStatusBar();
+                        
+                        alert('Composition loaded successfully!');
+                    } catch (error) {
+                        alert('Error loading file: ' + error.message);
+                    }
+                };
+                
+                reader.readAsText(file);
+            };
+            
+            input.click();
+        }
+
+        function exportSheet() {
+            alert('Export options:\n\n1. Use browser Print (Ctrl/Cmd + P) to save as PDF\n2. Use Save (💾) button to save as JSON for later editing\n3. Take a screenshot for image export');
+            window.print();
+        }
+
+        function zoomIn() {
+            if (zoomLevel < 200) {
+                zoomLevel += 10;
+                applyZoom();
+            }
+        }
+
+        function zoomOut() {
+            if (zoomLevel > 50) {
+                zoomLevel -= 10;
+                applyZoom();
+            }
+        }
+
+        function applyZoom() {
+            document.querySelector('.sheets-container').style.transform = `scale(${zoomLevel / 100})`;
+            document.querySelector('.sheets-container').style.transformOrigin = 'top center';
+            document.getElementById('zoomLevel').textContent = `${zoomLevel}%`;
+        }
+
+        function openTitleModal() {
+            const currentMetadata = sheets[0]?.metadata || {
+                title: "Untitled Composition",
+                composer: "Anonymous"
+            };
+            
+            document.getElementById('titleInput').value = currentMetadata.title;
+            document.getElementById('composerInput').value = currentMetadata.composer;
+            document.getElementById('titleModal').classList.add('active');
+        }
+
+        function closeTitleModal() {
+            document.getElementById('titleModal').classList.remove('active');
+        }
+
+        function saveTitleChanges() {
+            const title = document.getElementById('titleInput').value || 'Untitled Composition';
+            const composer = document.getElementById('composerInput').value || 'Anonymous';
+            
+            // Update metadata for all sheets
+            sheets.forEach(sheet => {
+                sheet.metadata = {
+                    title: title,
+                    composer: composer
+                };
+            });
+            
+            document.getElementById('documentTitle').textContent = title;
+            renderCurrentSheet(); // Update the displayed sheet
+            
+            closeTitleModal();
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Delete' && selectedPlacedSymbol) {
+                const sheetId = selectedPlacedSymbol.dataset.sheetId;
+                deleteSymbol(selectedPlacedSymbol, sheetId);
+            }
+            
+            if (e.key === 'Escape') {
+                if (selectedPlacedSymbol) {
+                    selectedPlacedSymbol.classList.remove('selected');
+                    selectedPlacedSymbol = null;
+                }
+                
+                document.querySelectorAll('.symbol-button').forEach(btn => btn.classList.remove('active'));
+                selectedSymbol = null;
+                updateStatusBar();
+            }
+            
+            // Sheet navigation with Ctrl+Tab
+            if (e.ctrlKey && e.key === 'Tab') {
+                e.preventDefault();
+                if (e.shiftKey) {
+                    // Previous sheet
+                    const prevIndex = currentSheetIndex > 0 ? currentSheetIndex - 1 : sheets.length - 1;
+                    switchToSheet(prevIndex);
+                } else {
+                    // Next sheet
+                    const nextIndex = currentSheetIndex < sheets.length - 1 ? currentSheetIndex + 1 : 0;
+                    switchToSheet(nextIndex);
+                }
+            }
+        });
+
+        // Initialize on load
+        init();
+    </script>
+</body>
+</html>
