@@ -28,7 +28,7 @@ if (!$user) {
 $user_id = $user['id'];
 $username = $user['username'];
 
-// Handle AJAX composition deletion
+// Handle AJAX composition deletion (same as home.php)
 if (isset($_POST['ajax_delete']) && isset($_POST['composition_id'])) {
     $composition_id = intval($_POST['composition_id']);
     
@@ -43,51 +43,36 @@ if (isset($_POST['ajax_delete']) && isset($_POST['composition_id'])) {
     exit();
 }
 
-// Check if we're viewing all compositions
-$view_all = isset($_GET['view']) && $_GET['view'] === 'all';
+// Pagination setup
 $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 $limit = 12;
 $offset = ($page - 1) * $limit;
 
-// Fetch ALL compositions count for stats
+// Fetch ALL compositions count
 $total_stmt = $conn->prepare("SELECT COUNT(*) as total FROM compositions WHERE user_id = ?");
 $total_stmt->bind_param("i", $user_id);
 $total_stmt->execute();
 $total_result = $total_stmt->get_result();
 $total_compositions = $total_result->fetch_assoc()['total'];
 
-// Fetch compositions for this user
-if ($view_all) {
-    // Get total count for pagination
-    $total_pages = ceil($total_compositions / $limit);
-    
-    // Fetch paginated compositions
-    $compositions_stmt = $conn->prepare("
-        SELECT id, title, composer, created_at, updated_at 
-        FROM compositions 
-        WHERE user_id = ? 
-        ORDER BY updated_at DESC 
-        LIMIT ? OFFSET ?
-    ");
-    $compositions_stmt->bind_param("iii", $user_id, $limit, $offset);
-    $compositions_stmt->execute();
-} else {
-    // Fetch only 3 recent compositions (LIMIT 3)
-    $compositions_stmt = $conn->prepare("
-        SELECT id, title, composer, created_at, updated_at 
-        FROM compositions 
-        WHERE user_id = ? 
-        ORDER BY updated_at DESC 
-        LIMIT 3
-    ");
-    $compositions_stmt->bind_param("i", $user_id);
-    $compositions_stmt->execute();
-}
+// Calculate total pages
+$total_pages = ceil($total_compositions / $limit);
+
+// Fetch paginated compositions
+$compositions_stmt = $conn->prepare("
+    SELECT id, title, composer, created_at, updated_at 
+    FROM compositions 
+    WHERE user_id = ? 
+    ORDER BY updated_at DESC 
+    LIMIT ? OFFSET ?
+");
+$compositions_stmt->bind_param("iii", $user_id, $limit, $offset);
+$compositions_stmt->execute();
 
 $compositions_result = $compositions_stmt->get_result();
-$recent_compositions = [];
+$all_compositions = [];
 while ($row = $compositions_result->fetch_assoc()) {
-    $recent_compositions[] = $row;
+    $all_compositions[] = $row;
 }
 ?>
 
@@ -96,7 +81,7 @@ while ($row = $compositions_result->fetch_assoc()) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TuneCraft Dashboard</title>
+    <title>TuneCraft - All Compositions</title>
     <link rel="stylesheet" href="style.css">
     <style>
         body {
@@ -107,7 +92,7 @@ while ($row = $compositions_result->fetch_assoc()) {
             display: flex;
         }
 
-        /* Updated CSS for composition cards */
+        /* Composition cards (same as home.php) */
         .project-card {
             width: 200px;
             padding: 20px;
@@ -228,242 +213,83 @@ while ($row = $compositions_result->fetch_assoc()) {
             margin-bottom: 40px;
         }
 
-      
-
-        /* Stats cards */
-        .stats-container {
-            display: flex;
-            gap: 20px;
-            margin-top: 30px;
-            margin-bottom: 30px;
-        }
-
-        .stat-card {
-            flex: 1;
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .stat-icon {
-            width: 50px;
-            height: 50px;
-            background: linear-gradient(to right, #8b5cf6, #ec4899);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 24px;
-        }
-
-        .stat-info h3 {
-            margin: 0;
-            font-size: 24px;
-            color: #1e293b;
-        }
-
-        .stat-info p {
-            margin: 5px 0 0;
-            color: #64748b;
-            font-size: 14px;
-        }
-
         /* Action buttons */
-        
-        /* Action buttons */
-.action-buttons {
-    display: flex;
-    gap: 15px;
-    margin: 20px 0;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-.new-composition-btn {
-    cursor: pointer;
-    padding: 14px 28px;
-    font-size: 16px;
-    border: none;
-    color: white;
-    background: linear-gradient(to right, #8b5cf6, #ec4899);
-    border-radius: 14px;
-    cursor: pointer;
-    box-shadow: 0 8px 18px rgba(236, 72, 153, 0.3);
-    transition: 0.2s;
-    font-weight: 600;
-    height: 50px; /* Fixed height */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-left:-545px;
-    margin-top: 0; /* REMOVE THE MARGIN-TOP */
-}
-
-.new-composition-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 22px rgba(236, 72, 153, 0.4);
-}
-
-.view-all-btn {
-    padding: 14px 28px;
-    background: #3b82f6;
-    color: white;
-    border: none;
-    border-radius: 14px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: 0.2s;
-    font-weight: 600;
-    height: 50px; /* Same height as new composition button */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.view-all-btn:hover {
-    background: #2563eb;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 18px rgba(37, 99, 235, 0.3);
-}
-
-.view-recent-btn {
-    padding: 14px 28px;
-    background: #10b981;
-    color: white;
-    border: none;
-    border-radius: 14px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: 0.2s;
-    font-weight: 600;
-    height: 50px; /* Same height as other buttons */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.view-recent-btn:hover {
-    background: #059669;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 18px rgba(5, 150, 105, 0.3);
-}
-     /* Recent compositions heading */
-        .recent-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .recent-title:before {
-            content: "🎵";
-            font-size: 20px;
-        }
-
-        /* Delete confirmation modal */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-
-        .modal {
-            background: white;
-            padding: 30px;
-            border-radius: 16px;
-            max-width: 400px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-        }
-
-        .modal h3 {
-            margin-top: 0;
-            color: #1e293b;
-        }
-
-        .modal p {
-            color: #64748b;
-            margin-bottom: 25px;
-        }
-
-        .modal-buttons {
+        .action-buttons {
             display: flex;
             gap: 15px;
-            justify-content: center;
+            margin: 20px 0;
+            align-items: center;
+            flex-wrap: wrap;
         }
 
-        .modal-btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
+        .new-composition-btn {
             cursor: pointer;
-            font-size: 14px;
-            transition: 0.2s;
-            font-weight: 500;
-        }
-
-        .modal-btn.cancel {
-            background: #f3f4f6;
-            color: #374151;
-        }
-
-        .modal-btn.cancel:hover {
-            background: #e5e7eb;
-        }
-
-        .modal-btn.delete {
-            background: #ef4444;
+            padding: 14px 28px;
+            font-size: 16px;
+            border: none;
             color: white;
+            background: linear-gradient(to right, #8b5cf6, #ec4899);
+            border-radius: 14px;
+            cursor: pointer;
+            box-shadow: 0 8px 18px rgba(236, 72, 153, 0.3);
+            transition: 0.2s;
+            font-weight: 600;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 0;
         }
 
-        .modal-btn.delete:hover {
-            background: #dc2626;
+        .new-composition-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(236, 72, 153, 0.4);
         }
 
-        /* Success message */
-        .success-message {
-            position: fixed;
-            top: 20px;
-            right: 20px;
+        .back-to-dashboard-btn {
+            padding: 14px 28px;
             background: #10b981;
             color: white;
-            padding: 15px 25px;
-            border-radius: 10px;
-            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
-            display: none;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.2s;
+            font-weight: 600;
+            height: 50px;
+            display: flex;
             align-items: center;
-            gap: 10px;
-            z-index: 1001;
-            animation: slideIn 0.3s ease;
+            justify-content: center;
         }
 
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+        .back-to-dashboard-btn:hover {
+            background: #059669;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 18px rgba(5, 150, 105, 0.3);
         }
 
-        /* Show delete button on card hover or when selected */
-        .project-card.selected .delete-btn {
-            opacity: 1;
+        /* Page header */
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .page-header h1 {
+            margin: 0;
+            color: #1e293b;
+        }
+
+        .total-count {
+            font-size: 18px;
+            color: #64748b;
+            background: #f1f5f9;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-weight: 500;
         }
 
         /* Pagination */
@@ -501,13 +327,64 @@ while ($row = $compositions_result->fetch_assoc()) {
             opacity: 0.5;
             cursor: not-allowed;
         }
+
+        /* Success message and modal (same as home.php) */
+        .success-message {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #10b981;
+            color: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
+            display: none;
+            align-items: center;
+            gap: 10px;
+            z-index: 1001;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal {
+            background: white;
+            padding: 30px;
+            border-radius: 16px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
     </style>
 </head>
 
 <body>
 <div class="container">
 
-<!-- SIDEBAR -->
+<!-- SIDEBAR (same as home.php) -->
 <aside class="sidebar">
     <div class="logo-wrapper">
         <img src="Assets/music-2.svg" class="logo">
@@ -518,7 +395,7 @@ while ($row = $compositions_result->fetch_assoc()) {
     <nav class="menu-nav">
         <ul class="menu">
             <div class="menu-item-container">
-                <li class="active">
+                <li>
                     <a href="home.php">
                         <img src="./Assets/house.svg"> Dashboard
                     </a>
@@ -551,83 +428,31 @@ while ($row = $compositions_result->fetch_assoc()) {
 </aside>
 
 <!-- MAIN CONTENT -->
-<!-- MAIN CONTENT -->
 <main class="main-content">
-    <h1>Welcome <?php echo htmlspecialchars($username); ?>! 👋</h1>
-    <h2>Your creative journey begins here!</h2>
-
-    <!-- Stats Section -->
-    <div class="stats-container">
-        <div class="stat-card">
-            <div class="stat-icon">🎵</div>
-            <div class="stat-info">
-                <h3><?php echo $total_compositions; ?></h3>
-                <p>Total Compositions</p>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">📅</div>
-            <div class="stat-info">
-                <h3>
-                    <?php 
-                    if (!empty($recent_compositions)) {
-                        $latest = reset($recent_compositions);
-                        echo date('M j', strtotime($latest['updated_at']));
-                    } else {
-                        echo 'None';
-                    }
-                    ?>
-                </h3>
-                <p>Last Updated</p>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon">⭐</div>
-            <div class="stat-info">
-                <h3><?php echo count($recent_compositions); ?> / 3</h3>
-                <p>Recent Compositions</p>
-            </div>
-        </div>
+    <div class="page-header">
+        <h1>All Your Compositions</h1>
+        <div class="total-count">Total: <?php echo $total_compositions; ?> compositions</div>
     </div>
 
-   <div class="action-buttons">
-    <button class="new-composition-btn" onclick="window.location.href='music-note-editor.html'">
-        + Create New Composition
-    </button>
-    
-    <?php if (!$view_all && $total_compositions > 3): ?>
-        <button class="view-all-btn" onclick="window.location.href='view-all.php'">
-            View All Compositions (<?php echo $total_compositions; ?>)
+    <div class="action-buttons">
+        <button class="new-composition-btn" onclick="window.location.href='music-note-editor.html'">
+            + Create New Composition
         </button>
-    <?php elseif ($view_all): ?>
-        <button class="view-recent-btn" onclick="window.location.href='home.php'">
+        
+        <button class="back-to-dashboard-btn" onclick="window.location.href='home.php'">
             ← Back to Dashboard
         </button>
-    <?php endif; ?>
-</div>
-
-    <h3 class="recent-title">
-        <?php 
-        if ($view_all) {
-            echo "All Your Compositions";
-        } else {
-            echo "Recent Compositions (Showing " . count($recent_compositions) . " of 3)";
-            if ($total_compositions > 3) {
-                echo " <small style='color:#6b7280; font-weight:normal; margin-left:10px;'>Click 'View All' to see more</small>";
-            }
-        }
-        ?>
-    </h3>
+    </div>
 
     <div class="projects">
-        <?php if (empty($recent_compositions)): ?>
+        <?php if (empty($all_compositions)): ?>
             <div class="empty-state">
                 <img src="./Assets/music.svg" alt="No compositions">
                 <p class="empty-title">No compositions yet</p>
                 <p>Create your first masterpiece! Click the button above to get started.</p>
             </div>
         <?php else: ?>
-            <?php foreach ($recent_compositions as $composition): ?>
+            <?php foreach ($all_compositions as $composition): ?>
                 <div class="project-card" data-id="<?php echo $composition['id']; ?>">
                     <button class="delete-btn" onclick="showDeleteModal(<?php echo $composition['id']; ?>, '<?php echo htmlspecialchars(addslashes($composition['title'])); ?>')">×</button>
                     
@@ -648,13 +473,11 @@ while ($row = $compositions_result->fetch_assoc()) {
         <?php endif; ?>
     </div>
 
-    <?php if ($view_all && $total_compositions > 0): 
-        $total_pages = ceil($total_compositions / $limit);
-    ?>
+    <?php if ($total_compositions > 0): ?>
         <?php if ($total_pages > 1): ?>
             <div class="pagination">
                 <?php if ($page > 1): ?>
-                    <button class="page-btn" onclick="window.location.href='home.php?view=all&page=<?php echo $page - 1; ?>'">← Previous</button>
+                    <button class="page-btn" onclick="window.location.href='view-all.php?page=<?php echo $page - 1; ?>'">← Previous</button>
                 <?php else: ?>
                     <button class="page-btn disabled">← Previous</button>
                 <?php endif; ?>
@@ -666,13 +489,13 @@ while ($row = $compositions_result->fetch_assoc()) {
                 for ($i = $start_page; $i <= $end_page; $i++): 
                 ?>
                     <button class="page-btn <?php echo $i == $page ? 'active' : ''; ?>" 
-                            onclick="window.location.href='home.php?view=all&page=<?php echo $i; ?>'">
+                            onclick="window.location.href='view-all.php?page=<?php echo $i; ?>'">
                         <?php echo $i; ?>
                     </button>
                 <?php endfor; ?>
                 
                 <?php if ($page < $total_pages): ?>
-                    <button class="page-btn" onclick="window.location.href='home.php?view=all&page=<?php echo $page + 1; ?>'">Next →</button>
+                    <button class="page-btn" onclick="window.location.href='view-all.php?page=<?php echo $page + 1; ?>'">Next →</button>
                 <?php else: ?>
                     <button class="page-btn disabled">Next →</button>
                 <?php endif; ?>
@@ -681,7 +504,7 @@ while ($row = $compositions_result->fetch_assoc()) {
     <?php endif; ?>
 </main>
 
-<!-- Delete Confirmation Modal -->
+<!-- Delete Confirmation Modal (same as home.php) -->
 <div class="modal-overlay" id="deleteModal">
     <div class="modal">
         <h3>Delete Composition</h3>
@@ -693,7 +516,7 @@ while ($row = $compositions_result->fetch_assoc()) {
     </div>
 </div>
 
-<!-- Success Message -->
+<!-- Success Message (same as home.php) -->
 <div class="success-message" id="successMessage" style="display: none;">
     <span>✓</span>
     <span id="successText"></span>
@@ -706,7 +529,7 @@ while ($row = $compositions_result->fetch_assoc()) {
 </div>
 
 <script>
-// Delete confirmation modal
+// Delete confirmation modal (same as home.php with slight modification)
 let compositionToDelete = null;
 let compositionToDeleteTitle = '';
 
@@ -745,7 +568,7 @@ function confirmDelete() {
     console.log('Deleting composition ID:', compositionToDelete);
     
     // Send AJAX request to delete composition
-    fetch('home.php', {
+    fetch('view-all.php', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded',
@@ -769,24 +592,15 @@ function confirmDelete() {
                     setTimeout(() => {
                         card.remove();
                         
-                        // Update total count
-                        const totalCountElement = document.querySelector('.stat-info h3:first-child');
+                        // Update total count in header
+                        const totalCountElement = document.querySelector('.total-count');
                         if (totalCountElement) {
-                            const currentCount = parseInt(totalCountElement.textContent);
-                            if (!isNaN(currentCount) && currentCount > 0) {
-                                totalCountElement.textContent = currentCount - 1;
-                            }
-                        }
-                        
-                        // Update recent count
-                        const recentCountElement = document.querySelectorAll('.stat-info h3')[2];
-                        if (recentCountElement) {
-                            const recentText = recentCountElement.textContent;
-                            const match = recentText.match(/(\d+)\s*\/\s*3/);
+                            const currentText = totalCountElement.textContent;
+                            const match = currentText.match(/Total: (\d+) compositions/);
                             if (match) {
-                                const currentRecent = parseInt(match[1]);
-                                if (!isNaN(currentRecent) && currentRecent > 0) {
-                                    recentCountElement.textContent = `${currentRecent - 1} / 3`;
+                                const currentCount = parseInt(match[1]);
+                                if (!isNaN(currentCount) && currentCount > 0) {
+                                    totalCountElement.textContent = `Total: ${currentCount - 1} compositions`;
                                 }
                             }
                         }
@@ -803,6 +617,9 @@ function confirmDelete() {
                                     <p>Create your first masterpiece! Click the button above to get started.</p>
                                 </div>
                             `;
+                            // Hide pagination if no compositions left
+                            const pagination = document.querySelector('.pagination');
+                            if (pagination) pagination.style.display = 'none';
                         }
                         
                         // Show success message
@@ -862,14 +679,6 @@ document.addEventListener('keydown', function(e) {
 
 // Initialize on page load
 document.addEventListener('DOMContentLoaded', function() {
-    // Check if we should show a welcome message for new users
-    const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('newuser') === 'true') {
-        setTimeout(() => {
-            alert('Welcome to TuneCraft! 🎵\n\nStart by creating your first composition using the "Create New Composition" button.');
-        }, 500);
-    }
-    
     // Show delete button on card hover
     document.querySelectorAll('.project-card').forEach(card => {
         card.addEventListener('mouseenter', function() {
@@ -899,15 +708,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
-
-// Handle window refresh after delete if needed
-if (window.location.search.includes('deleted=true')) {
-    showSuccessMessage('Composition deleted successfully!');
-    // Clean URL
-    const url = new URL(window.location);
-    url.searchParams.delete('deleted');
-    window.history.replaceState({}, '', url);
-}
 </script>
 </body>
 </html>

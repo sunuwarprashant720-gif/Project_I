@@ -3,189 +3,203 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Music Theory Basics</title>
-   <link rel="stylesheet" href="style.css">
+    <title>Learn Music - TuneCraft</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="learn-container">
-        <!-- Header -->
-        <div class="learn-header">
-            <h1>🎵 Music Theory</h1>
-            <p class="learn-subtitle">Learn the basics of music notation, clefs, and timing</p>
-        </div>
+    <div class="container">
+        <!-- SIDEBAR (Same as home.php) -->
+        <aside class="sidebar">
+            <div class="logo-wrapper">
+                <img src="Assets/music-2.svg" class="logo">
+                <p class="logo-title">TuneCraft</p>
+            </div>
+            <p class="logo-description">Learn music theory!</p>
 
-        <!-- Navigation -->
-        <div class="learn-nav">
-            <button class="learn-nav-btn active" data-section="intro">Basics</button>
-            <button class="learn-nav-btn" data-section="clefs">Clefs</button>
-            <button class="learn-nav-btn" data-section="notes">Notes</button>
-        </div>
+            <nav class="menu-nav">
+                <ul class="menu">
+                    <div class="menu-item-container">
+                        <li>
+                            <a href="home.php">
+                                <img src="./Assets/house.svg"> Dashboard
+                            </a>
+                        </li>
+                    </div>
+                    <div class="menu-item-container">
+                        <li>
+                            <a href="music-note-editor.html">
+                                <img src="./Assets/music-2-black.svg"> Music Editor
+                            </a>
+                        </li>
+                    </div>
+                    <div class="menu-item-container">
+                        <li class="active">
+                            <a href="learn.html">
+                                <img src="./Assets/book.svg"> Learn
+                            </a>
+                        </li>
+                    </div>
+                </ul>
+            </nav>
 
-        <!-- Basics Section -->
-        <section id="learn-intro" class="learn-section active">
-            <h2 class="learn-section-title">Music Theory Basics</h2>
-            
-            <p class="learn-text">
-                Music theory helps you understand how music works. It covers everything from reading sheet music to creating melodies.
-            </p>
-            
-            <div class="learn-basics-grid">
-                <div class="learn-card">
-                    <div class="learn-icon-container">
-                        <span>🎼</span>
-                    </div>
-                    <h3>Staff & Notation</h3>
-                    <p>The staff has five lines and four spaces where notes are written to show pitch.</p>
+            <form action="logout.php" method="POST">
+                <button type="submit" name="logout" class="logout-btn">
+                    <img src="./Assets/log-out.svg" alt="">
+                    Logout
+                </button>
+            </form>
+        </aside>
+
+        <!-- MAIN CONTENT AREA -->
+        <main class="learn-main-content">
+            <!-- Learn Content Container -->
+            <div class="learn-container">
+                <!-- Header -->
+                <div class="learn-header">
+                    <h1>🎵 Music Theory</h1>
+                    <p class="learn-subtitle">Learn the basics of music notation, clefs, and timing</p>
                 </div>
-                
-                <div class="learn-card">
-                    <div class="learn-icon-container">
-                        <span>🎵</span>
-                    </div>
-                    <h3>Notes & Rests</h3>
-                    <p>Notes represent sounds, rests represent silence. Different shapes mean different lengths.</p>
+
+                <!-- Navigation -->
+                <div class="learn-nav">
+                    <button class="learn-nav-btn active" data-section="intro">Basics</button>
+                    <button class="learn-nav-btn" data-section="clefs">Clefs</button>
+                    <button class="learn-nav-btn" data-section="notes">Notes</button>
                 </div>
-                
-                <div class="learn-card">
-                    <div class="learn-icon-container">
-                        <span>🎹</span>
+
+                <!-- Basics Section -->
+                <section id="learn-intro" class="learn-section active">
+                    <h2 class="learn-section-title">Music Theory Basics</h2>
+                    
+                    <p class="learn-text">
+                        Music theory helps you understand how music works. It covers everything from reading sheet music to creating melodies.
+                    </p>
+                    
+                    <div class="learn-basics-grid">
+                        <div class="learn-card">
+                            <div class="learn-icon-container">
+                                <span>🎼</span>
+                            </div>
+                            <h3>Staff & Notation</h3>
+                            <p>The staff has five lines and four spaces where notes are written to show pitch.</p>
+                        </div>
+                        
+                        <div class="learn-card">
+                            <div class="learn-icon-container">
+                                <span>🎵</span>
+                            </div>
+                            <h3>Notes & Rests</h3>
+                            <p>Notes represent sounds, rests represent silence. Different shapes mean different lengths.</p>
+                        </div>
+                        
+                        <div class="learn-card">
+                            <div class="learn-icon-container">
+                                <span>🎹</span>
+                            </div>
+                            <h3>Clefs</h3>
+                            <p>Clefs tell you which notes correspond to which lines on the staff.</p>
+                        </div>
+                        
+                        <div class="learn-card">
+                            <div class="learn-icon-container">
+                                <span>⏱️</span>
+                            </div>
+                            <h3>Rhythm</h3>
+                            <p>Timing and rhythm patterns are organized using time signatures.</p>
+                        </div>
                     </div>
-                    <h3>Clefs</h3>
-                    <p>Clefs tell you which notes correspond to which lines on the staff.</p>
-                </div>
-                
-                <div class="learn-card">
-                    <div class="learn-icon-container">
-                        <span>⏱️</span>
+                </section>
+
+                <!-- Clefs Section -->
+                <section id="learn-clefs" class="learn-section">
+                    <h2 class="learn-section-title">Understanding Clefs</h2>
+                    
+                    <p class="learn-text">
+                        Clefs are symbols at the beginning of a staff that show which notes go on which lines.
+                    </p>
+                    
+                    <div class="learn-clefs-grid">
+                        <!-- Treble Clef -->
+                        <div class="learn-clef-card">
+                            <div class="learn-clef-header">
+                                <div class="learn-clef-symbol">𝄞</div>
+                                <h3>Treble Clef</h3>
+                            </div>
+                            <div class="learn-clef-content">
+                                <h3 class="learn-clef-title">Treble Clef (G Clef)</h3>
+                                <div class="learn-clef-subtitle">For high-pitched instruments</div>
+                                <p class="learn-clef-description">
+                                    The curl circles around the G line. Used for violin, flute, trumpet, and piano right hand.
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <!-- Bass Clef -->
+                        <div class="learn-clef-card">
+                            <div class="learn-clef-header">
+                                <div class="learn-clef-symbol">𝄢</div>
+                                <h3>Bass Clef</h3>
+                            </div>
+                            <div class="learn-clef-content">
+                                <h3 class="learn-clef-title">Bass Clef (F Clef)</h3>
+                                <div class="learn-clef-subtitle">For low-pitched instruments</div>
+                                <p class="learn-clef-description">
+                                    The two dots surround the F line. Used for cello, bassoon, trombone, and piano left hand.
+                                </p>
+                            </div>
+                        </div>
                     </div>
-                    <h3>Rhythm</h3>
-                    <p>Timing and rhythm patterns are organized using time signatures.</p>
+                </section>
+
+                <!-- Notes Section -->
+                <section id="learn-notes" class="learn-section">
+                    <h2 class="learn-section-title">Notes & Timing</h2>
+                    
+                    <p class="learn-text">
+                        Notes show both pitch (how high/low) and duration (how long to play).
+                    </p>
+                    
+                    <div class="learn-notes-grid">
+                        <!-- Whole Note -->
+                        <div class="learn-note-card">
+                            <div class="learn-note-symbol">𝅝</div>
+                            <div class="learn-note-name">Whole Note</div>
+                            <div class="learn-note-duration">4 beats</div>
+                        </div>
+                        
+                        <!-- Half Note -->
+                        <div class="learn-note-card">
+                            <div class="learn-note-symbol">𝅗𝅥</div>
+                            <div class="learn-note-name">Half Note</div>
+                            <div class="learn-note-duration">2 beats</div>
+                        </div>
+                        
+                        <!-- Quarter Note -->
+                        <div class="learn-note-card">
+                            <div class="learn-note-symbol">𝅘𝅥</div>
+                            <div class="learn-note-name">Quarter Note</div>
+                            <div class="learn-note-duration">1 beat</div>
+                        </div>
+                        
+                        <!-- Eighth Note -->
+                        <div class="learn-note-card">
+                            <div class="learn-note-symbol">♪</div>
+                            <div class="learn-note-name">Eighth Note</div>
+                            <div class="learn-note-duration">½ beat</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Footer -->
+                <div class="learn-footer">
+                    <p>Music Theory Learning Platform • Simplified for Beginners</p>
                 </div>
             </div>
-        </section>
-
-        <!-- Clefs Section -->
-        <section id="learn-clefs" class="learn-section">
-            <h2 class="learn-section-title">Understanding Clefs</h2>
-            
-            <p class="learn-text">
-                Clefs are symbols at the beginning of a staff that show which notes go on which lines.
-            </p>
-            
-            <div class="learn-clefs-grid">
-                <!-- Treble Clef -->
-                <div class="learn-clef-card">
-                    <div class="learn-clef-header">
-                        <div class="learn-clef-symbol">𝄞</div>
-                        <h3>Treble Clef</h3>
-                    </div>
-                    <div class="learn-clef-content">
-                        <h3 class="learn-clef-title">Treble Clef (G Clef)</h3>
-                        <div class="learn-clef-subtitle">For high-pitched instruments</div>
-                        <p class="learn-clef-description">
-                            The curl circles around the G line. Used for violin, flute, trumpet, and piano right hand.
-                        </p>
-                    </div>
-                </div>
-                
-                <!-- Bass Clef -->
-                <div class="learn-clef-card">
-                    <div class="learn-clef-header">
-                        <div class="learn-clef-symbol">𝄢</div>
-                        <h3>Bass Clef</h3>
-                    </div>
-                    <div class="learn-clef-content">
-                        <h3 class="learn-clef-title">Bass Clef (F Clef)</h3>
-                        <div class="learn-clef-subtitle">For low-pitched instruments</div>
-                        <p class="learn-clef-description">
-                            The two dots surround the F line. Used for cello, bassoon, trombone, and piano left hand.
-                        </p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Staff Image Placeholder -->
-            <div class="learn-image-container">
-                <div class="learn-image" style="
-                    background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
-                    height: 120px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    color: #666;
-                    font-size: 18px;
-                    font-weight: 500;
-                ">
-                    [Staff Line Image Would Go Here]
-                </div>
-                <p class="learn-image-caption">Example of a musical staff with clefs and notes</p>
-            </div>
-        </section>
-
-        <!-- Notes Section -->
-        <section id="learn-notes" class="learn-section">
-            <h2 class="learn-section-title">Notes & Timing</h2>
-            
-            <p class="learn-text">
-                Notes show both pitch (how high/low) and duration (how long to play).
-            </p>
-            
-            <div class="learn-notes-grid">
-                <!-- Whole Note -->
-                <div class="learn-note-card">
-                    <div class="learn-note-symbol">𝅝</div>
-                    <div class="learn-note-name">Whole Note</div>
-                    <div class="learn-note-duration">4 beats</div>
-                </div>
-                
-                <!-- Half Note -->
-                <div class="learn-note-card">
-                    <div class="learn-note-symbol">𝅗𝅥</div>
-                    <div class="learn-note-name">Half Note</div>
-                    <div class="learn-note-duration">2 beats</div>
-                </div>
-                
-                <!-- Quarter Note -->
-                <div class="learn-note-card">
-                    <div class="learn-note-symbol">♩</div>
-                    <div class="learn-note-name">Quarter Note</div>
-                    <div class="learn-note-duration">1 beat</div>
-                </div>
-                
-                <!-- Eighth Note -->
-                <div class="learn-note-card">
-                    <div class="learn-note-symbol">♪</div>
-                    <div class="learn-note-name">Eighth Note</div>
-                    <div class="learn-note-duration">½ beat</div>
-                </div>
-            </div>
-            
-            <!-- Staff Image Placeholder -->
-            <div class="learn-image-container">
-                <div class="learn-image" style="
-                    background: linear-gradient(135deg, #f0f0f0, #e0e0e0);
-                    height: 100px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    color: #666;
-                    font-size: 18px;
-                    font-weight: 500;
-                ">
-                    [Note Duration Chart Would Go Here]
-                </div>
-                <p class="learn-image-caption">Visual guide to note durations and timing</p>
-            </div>
-        </section>
-
-        <!-- Footer -->
-        <div class="learn-footer">
-            <p>Music Theory Learning Platform • Simplified for Beginners</p>
-        </div>
+        </main>
     </div>
 
     <script>
-        // Simple navigation
+        // Simple navigation between sections
         const learnNavButtons = document.querySelectorAll('.learn-nav-btn');
         const learnSections = document.querySelectorAll('.learn-section');
 
@@ -205,6 +219,34 @@
                     }
                 });
             });
+        });
+
+        // Smooth scroll to top when changing sections
+        learnNavButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+                const activeBtn = document.querySelector('.learn-nav-btn.active');
+                const buttons = Array.from(learnNavButtons);
+                const currentIndex = buttons.indexOf(activeBtn);
+                let nextIndex;
+                
+                if (e.key === 'ArrowRight') {
+                    nextIndex = (currentIndex + 1) % buttons.length;
+                } else if (e.key === 'ArrowLeft') {
+                    nextIndex = (currentIndex - 1 + buttons.length) % buttons.length;
+                }
+                
+                buttons[nextIndex].click();
+            }
         });
     </script>
 </body>
