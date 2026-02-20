@@ -23,6 +23,55 @@ if (!$conn || $conn->connect_error) {
     exit();
 }
 
+// Handle GET request (load composition)
+if ($_SERVER['REQUEST_METHOD'] === 'GET' && isset($_GET['id'])) {
+    ob_end_clean();
+    header('Content-Type: application/json');
+    
+    $composition_id = intval($_GET['id']);
+    error_log("GET request to load composition ID: $composition_id");
+    
+    // Get user ID
+    $email = $_SESSION['email'];
+    $stmt = $conn->prepare("SELECT user_id AS id FROM users WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $user = $result->fetch_assoc();
+    
+    if (!$user) {
+        error_log("User not found for email: $email");
+        echo json_encode(['success' => false, 'message' => 'User not found']);
+        $conn->close();
+        exit();
+    }
+    
+    $user_id = $user['id'];
+    error_log("Loading for user_id: $user_id");
+    
+    // Get composition
+    $stmt = $conn->prepare("SELECT id, title, composer, data FROM compositions WHERE id = ? AND user_id = ?");
+    $stmt->bind_param("ii", $composition_id, $user_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $composition = $result->fetch_assoc();
+    
+    if ($composition) {
+        error_log("Composition found. Data size: " . strlen($composition['data']) . " bytes");
+        error_log("Data preview: " . substr($composition['data'], 0, 100));
+        echo json_encode([
+            'success' => true,
+            'composition' => $composition
+        ]);
+    } else {
+        error_log("Composition not found for ID: $composition_id");
+        echo json_encode(['success' => false, 'message' => 'Composition not found']);
+    }
+    
+    $conn->close();
+    exit();
+}
+
 // Get POST data
 $input = json_decode(file_get_contents('php://input'), true);
 
@@ -35,7 +84,7 @@ if (!$input) {
 
 // Get user ID
 $email = $_SESSION['email'];
-$stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
+$stmt = $conn->prepare("SELECT user_id AS id FROM users WHERE email = ?");
 if (!$stmt) {
     ob_end_clean();
     header('Content-Type: application/json');
@@ -71,27 +120,38 @@ $response = [];
 try {
     if ($composition_id > 0) {
         // Update existing composition
+        error_log("Updating composition ID: $composition_id for user_id: $user_id");
+        error_log("Data size: " . strlen($data) . " bytes");
+        
         $stmt = $conn->prepare("UPDATE compositions SET title=?, composer=?, data=?, updated_at=NOW() WHERE id=? AND user_id=?");
         $stmt->bind_param("sssii", $title, $composer, $data, $composition_id, $user_id);
         
         if ($stmt->execute()) {
+            error_log("Update successful. Affected rows: " . $stmt->affected_rows);
             $response = ['success' => true, 'id' => $composition_id, 'message' => 'Composition updated'];
         } else {
-            throw new Exception('Update failed');
+            error_log("Update failed: " . $stmt->error);
+            throw new Exception('Update failed: ' . $stmt->error);
         }
     } else {
         // Insert new composition
+        error_log("Inserting new composition for user_id: $user_id");
+        error_log("Data size: " . strlen($data) . " bytes");
+        
         $stmt = $conn->prepare("INSERT INTO compositions (user_id, title, composer, data) VALUES (?, ?, ?, ?)");
         $stmt->bind_param("isss", $user_id, $title, $composer, $data);
         
         if ($stmt->execute()) {
             $new_id = $conn->insert_id;
+            error_log("Insert successful. New ID: $new_id");
             $response = ['success' => true, 'id' => $new_id, 'message' => 'Composition saved'];
         } else {
-            throw new Exception('Insert failed');
+            error_log("Insert failed: " . $stmt->error);
+            throw new Exception('Insert failed: ' . $stmt->error);
         }
     }
 } catch (Exception $e) {
+    error_log("Exception: " . $e->getMessage());
     $response = ['success' => false, 'message' => 'Database error: ' . $e->getMessage()];
 }
 

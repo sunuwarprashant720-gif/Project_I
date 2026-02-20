@@ -13,16 +13,17 @@ if (!isset($_SESSION['email'])) {
 }
 
 // Get JSON input
+// Decode JSON body. Accept empty array/object as valid input; only fail on decode error (null)
 $input = json_decode(file_get_contents('php://input'), true);
 
-if (!$input) {
-    echo json_encode(['success' => false, 'message' => 'No data received']);
+if (json_last_error() !== JSON_ERROR_NONE || $input === null) {
+    echo json_encode(['success' => false, 'message' => 'No data received or invalid JSON']);
     exit();
 }
 
 // Get user ID
 $email = $_SESSION['email'];
-$stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
+$stmt = $conn->prepare("SELECT user_id AS id FROM users WHERE email = ?");
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $result = $stmt->get_result();

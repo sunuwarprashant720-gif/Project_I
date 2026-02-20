@@ -17,7 +17,7 @@ if (!$composition_id) {
 
 // Get user ID
 $email = $_SESSION['email'];
-$stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
+$stmt = $conn->prepare("SELECT user_id AS id FROM users WHERE email = ?");
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $result = $stmt->get_result();

@@ -28,7 +28,7 @@ if (isset($_POST['signUp'])) {
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
     // PREPARED STATEMENT (SECURE)
-    $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
+    $stmt = $conn->prepare("SELECT user_id AS id FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $stmt->store_result();

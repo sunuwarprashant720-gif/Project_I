@@ -13,7 +13,7 @@ if (!isset($_SESSION['email'])) {
 
 // Get user ID from session email
 $email = $_SESSION['email'];
-$stmt = $conn->prepare("SELECT id, username FROM users WHERE email = ?");
+$stmt = $conn->prepare("SELECT user_id AS id, username FROM users WHERE email = ?");
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $result = $stmt->get_result();

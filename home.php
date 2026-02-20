@@ -13,7 +13,7 @@ if (!isset($_SESSION['email'])) {
 
 // Get user ID from session email
 $email = $_SESSION['email'];
-$stmt = $conn->prepare("SELECT id, username FROM users WHERE email = ?");
+$stmt = $conn->prepare("SELECT user_id, username FROM users WHERE email = ?");
 $stmt->bind_param("s", $email);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -25,7 +25,7 @@ if (!$user) {
     exit();
 }
 
-$user_id = $user['id'];
+$user_id = $user['user_id'];
 $username = $user['username'];
 
 // Handle AJAX composition deletion
@@ -281,6 +281,7 @@ while ($row = $compositions_result->fetch_assoc()) {
     gap: 15px;
     margin: 20px 0;
     align-items: center;
+    justify-content: flex-start; /* align buttons with stats container */
     flex-wrap: wrap;
 }
 
@@ -300,8 +301,8 @@ while ($row = $compositions_result->fetch_assoc()) {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-left:-545px;
-    margin-top: 0; /* REMOVE THE MARGIN-TOP */
+    margin-left: 0;
+    margin-top: 0;
 }
 
 .new-composition-btn:hover {

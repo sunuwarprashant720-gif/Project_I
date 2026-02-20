@@ -8,7 +8,7 @@
 </head>
 <body>
     <div class="container">
-        <!-- SIDEBAR (Same as home.php) -->
+        <!-- SIDEBAR -->
         <aside class="sidebar">
             <div class="logo-wrapper">
                 <img src="Assets/music-2.svg" class="logo">
@@ -50,203 +50,335 @@
             </form>
         </aside>
 
-        <!-- MAIN CONTENT AREA -->
-        <main class="learn-main-content">
-            <!-- Learn Content Container -->
-            <div class="learn-container">
-                <!-- Header -->
-                <div class="learn-header">
-                    <h1>🎵 Music Theory</h1>
-                    <p class="learn-subtitle">Learn the basics of music notation, clefs, and timing</p>
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+            <!-- Navigation Tabs + Tutorials button -->
+            <div style="display: flex; gap: 0; margin-bottom: 30px; border-bottom: 2px solid #e5e7eb; padding-bottom: 0; justify-content: space-between; align-items: center;">
+                <div>
+                    <button id="theory-tab" class="nav-tab active" onclick="switchTab('theory')">📖 Music Theory</button>
+                    <button id="guide-tab" class="nav-tab" onclick="switchTab('guide')">📚 Quick Guide</button>
+                    <button id="tips-tab" class="nav-tab" onclick="switchTab('tips')">💡 Pro Tips</button>
                 </div>
-
-                <!-- Navigation -->
-                <div class="learn-nav">
-                    <button class="learn-nav-btn active" data-section="intro">Basics</button>
-                    <button class="learn-nav-btn" data-section="clefs">Clefs</button>
-                    <button class="learn-nav-btn" data-section="notes">Notes</button>
+                <div>
+                    <button id="tutorials-btn" class="action-button primary" style="margin-right:0;" onclick="openTutorials()">🎬 Tutorials</button>
                 </div>
+            </div>
 
-                <!-- Basics Section -->
-                <section id="learn-intro" class="learn-section active">
-                    <h2 class="learn-section-title">Music Theory Basics</h2>
+            <!-- Theory Page -->
+            <div id="theory-page" class="tab-page active" style="display: block;">
+                <h1>🎵 Learn Music Theory & Master TuneCraft</h1>
+                <p style="font-size: 17px; color: #555; margin-bottom: 20px;">Welcome! This guide teaches you the fundamentals of music notation and how to use TuneCraft to create beautiful compositions.</p>
+            
+            <!-- Music Theory Basics Section -->
+            <section style="margin-top: 40px;">
+                <h2 style="color: #8b5cf6; font-size: 24px; margin-bottom: 20px;">📖 Music Theory Basics</h2>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                    <div style="background: #f8f5ff; padding: 20px; border-radius: 12px; border-left: 4px solid #a855f7;">
+                        <h3 style="color: #7e22ce; margin-top: 0;">🎼 The Staff</h3>
+                        <p style="margin: 10px 0; color: #555;">A staff consists of 5 horizontal lines and 4 spaces. Music notes are placed on these lines and spaces to show their pitch. Each position represents a different musical note.</p>
+                    </div>
                     
-                    <p class="learn-text">
-                        Music theory helps you understand how music works. It covers everything from reading sheet music to creating melodies.
-                    </p>
+                    <div style="background: #f8f5ff; padding: 20px; border-radius: 12px; border-left: 4px solid #a855f7;">
+                        <h3 style="color: #7e22ce; margin-top: 0;">🎹 Clefs</h3>
+                        <p style="margin: 10px 0; color: #555;"><strong>Treble Clef (𝄞):</strong> Used for high notes (violin, flute, trumpet)</p>
+                        <p style="margin: 10px 0; color: #555;"><strong>Bass Clef (𝄢):</strong> Used for low notes (cello, bass, trombone)</p>
+                    </div>
                     
-                    <div class="learn-basics-grid">
-                        <div class="learn-card">
-                            <div class="learn-icon-container">
-                                <span>🎼</span>
-                            </div>
-                            <h3>Staff & Notation</h3>
-                            <p>The staff has five lines and four spaces where notes are written to show pitch.</p>
+                    <div style="background: #f8f5ff; padding: 20px; border-radius: 12px; border-left: 4px solid #a855f7;">
+                        <h3 style="color: #7e22ce; margin-top: 0;">⏱️ Time Signatures</h3>
+                        <p style="margin: 10px 0; color: #555;"><strong>4/4 (Common Time):</strong> 4 beats per measure. Most popular in modern music.</p>
+                        <p style="margin: 10px 0; color: #555;"><strong>3/4 (Waltz):</strong> 3 beats per measure. Often used in classical pieces.</p>
+                    </div>
+                    
+                    <div style="background: #f8f5ff; padding: 20px; border-radius: 12px; border-left: 4px solid #a855f7;">
+                        <h3 style="color: #7e22ce; margin-top: 0;">🎵 Notes & Duration</h3>
+                        <p style="margin: 10px 0; color: #555;"><strong>Whole Note (𝅝):</strong> 4 beats</p>
+                        <p style="margin: 10px 0; color: #555;"><strong>Half Note (𝅗𝅥):</strong> 2 beats</p>
+                        <p style="margin: 10px 0; color: #555;"><strong>Quarter Note (𝅘𝅥):</strong> 1 beat</p>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Quickstart removed per request; page focuses on Music Theory, Quick Guide, and Pro Tips -->
+            </div>
+
+            <!-- Guide Page -->
+            <div id="guide-page" class="tab-page" style="display: none;">
+                <h1>📚 Quick Start Guide</h1>
+                <p style="font-size: 17px; color: #555; margin-bottom: 20px;">Follow these step-by-step instructions to create your first composition with TuneCraft.</p>
+                
+                <section style="margin-top: 40px;">
+                    <h2 style="color: #8b5cf6; font-size: 24px; margin-bottom: 20px;">🚀 Getting Started</h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                        <div style="background: #e0f2fe; padding: 20px; border-radius: 12px; border-left: 4px solid #0ea5e9;">
+                            <h3 style="color: #0369a1; margin-top: 0;">Step 1: Access the Editor</h3>
+                            <p style="margin: 10px 0; color: #333;">Click on "Music Editor" from the sidebar to access the composition editor. You'll see a blank staff ready for your symbols.</p>
                         </div>
                         
-                        <div class="learn-card">
-                            <div class="learn-icon-container">
-                                <span>🎵</span>
-                            </div>
-                            <h3>Notes & Rests</h3>
-                            <p>Notes represent sounds, rests represent silence. Different shapes mean different lengths.</p>
+                        <div style="background: #dbeafe; padding: 20px; border-radius: 12px; border-left: 4px solid #0ea5e9;">
+                            <h3 style="color: #0369a1; margin-top: 0;">Step 2: Select Clef</h3>
+                            <p style="margin: 10px 0; color: #333;">Choose a clef symbol (Treble 𝄞 or Bass 𝄢) from the left panel. This determines the pitch range of your composition.</p>
                         </div>
                         
-                        <div class="learn-card">
-                            <div class="learn-icon-container">
-                                <span>🎹</span>
-                            </div>
-                            <h3>Clefs</h3>
-                            <p>Clefs tell you which notes correspond to which lines on the staff.</p>
+                        <div style="background: #dbeafe; padding: 20px; border-radius: 12px; border-left: 4px solid #0ea5e9;">
+                            <h3 style="color: #0369a1; margin-top: 0;">Step 3: Add Time Signature</h3>
+                            <p style="margin: 10px 0; color: #333;">Select a time signature (4/4 is most common) and place it right after your clef on the staff.</p>
                         </div>
                         
-                        <div class="learn-card">
-                            <div class="learn-icon-container">
-                                <span>⏱️</span>
-                            </div>
-                            <h3>Rhythm</h3>
-                            <p>Timing and rhythm patterns are organized using time signatures.</p>
+                        <div style="background: #dbeafe; padding: 20px; border-radius: 12px; border-left: 4px solid #0ea5e9;">
+                            <h3 style="color: #0369a1; margin-top: 0;">Step 4: Place Notes</h3>
+                            <p style="margin: 10px 0; color: #333;">Choose note symbols and click on the staff to place them. Different notes have different durations (whole, half, quarter, eighth).</p>
+                        </div>
+                        
+                        <div style="background: #dbeafe; padding: 20px; border-radius: 12px; border-left: 4px solid #0ea5e9;">
+                            <h3 style="color: #0369a1; margin-top: 0;">Step 5: Play & Listen</h3>
+                            <p style="margin: 10px 0; color: #333;">Click the Play button to hear your composition. Use the tempo slider to adjust the speed to your preference.</p>
+                        </div>
+                        
+                        <div style="background: #dbeafe; padding: 20px; border-radius: 12px; border-left: 4px solid #0ea5e9;">
+                            <h3 style="color: #0369a1; margin-top: 0;">Step 6: Save Your Work</h3>
+                            <p style="margin: 10px 0; color: #333;">Click the Save button to store your composition in your dashboard. You can access it anytime to edit or share.</p>
                         </div>
                     </div>
                 </section>
 
-                <!-- Clefs Section -->
-                <section id="learn-clefs" class="learn-section">
-                    <h2 class="learn-section-title">Understanding Clefs</h2>
-                    
-                    <p class="learn-text">
-                        Clefs are symbols at the beginning of a staff that show which notes go on which lines.
-                    </p>
-                    
-                    <div class="learn-clefs-grid">
-                        <!-- Treble Clef -->
-                        <div class="learn-clef-card">
-                            <div class="learn-clef-header">
-                                <div class="learn-clef-symbol">𝄞</div>
-                                <h3>Treble Clef</h3>
-                            </div>
-                            <div class="learn-clef-content">
-                                <h3 class="learn-clef-title">Treble Clef (G Clef)</h3>
-                                <div class="learn-clef-subtitle">For high-pitched instruments</div>
-                                <p class="learn-clef-description">
-                                    The curl circles around the G line. Used for violin, flute, trumpet, and piano right hand.
-                                </p>
-                            </div>
+                <section style="margin-top: 40px; margin-bottom: 30px;">
+                    <h2 style="color: #8b5cf6; font-size: 24px; margin-bottom: 20px;">🎯 Important Tips</h2>
+                    <div style="background: #fef3c7; padding: 25px; border-radius: 12px; border-left: 4px solid #f59e0b;">
+                        <ul style="color: #333; margin: 10px 0; padding-left: 20px; line-height: 1.8;">
+                            <li><strong>Always start with a clef</strong> - It must be the first symbol on your staff</li>
+                            <li><strong>Place time signature right after clef</strong> - This tells how many beats per measure</li>
+                            <li><strong>Drag to move symbols</strong> - Click and hold any symbol to reposition it</li>
+                            <li><strong>Hover to delete</strong> - Hover over a symbol to reveal the delete (×) button</li>
+                            <li><strong>Use zoom for precision</strong> - Zoom in to place notes accurately</li>
+                            <li><strong>Save frequently</strong> - Don't lose your work, save every few minutes</li>
+                        </ul>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Tips Page -->
+            <div id="tips-page" class="tab-page" style="display: none;">
+                <h1>💡 Pro Tips & Best Practices</h1>
+                <p style="font-size: 17px; color: #555; margin-bottom: 20px;">Master these techniques to become a TuneCraft expert and create professional-quality compositions.</p>
+                
+                <section style="margin-top: 40px;">
+                    <h2 style="color: #8b5cf6; font-size: 24px; margin-bottom: 20px;">Advanced Techniques</h2>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+                        <div style="background: #fef3c7; padding: 20px; border-radius: 12px; border-left: 4px solid #f59e0b;">
+                            <h3 style="color: #92400e; margin-top: 0;">⚡ Efficient Placement</h3>
+                            <p style="margin: 10px 0; color: #333;">Use the grid to align symbols. When you zoom to 150%, symbols snap more precisely to staff positions. This is ideal for detailed work.</p>
                         </div>
                         
-                        <!-- Bass Clef -->
-                        <div class="learn-clef-card">
-                            <div class="learn-clef-header">
-                                <div class="learn-clef-symbol">𝄢</div>
-                                <h3>Bass Clef</h3>
-                            </div>
-                            <div class="learn-clef-content">
-                                <h3 class="learn-clef-title">Bass Clef (F Clef)</h3>
-                                <div class="learn-clef-subtitle">For low-pitched instruments</div>
-                                <p class="learn-clef-description">
-                                    The two dots surround the F line. Used for cello, bassoon, trombone, and piano left hand.
-                                </p>
-                            </div>
+                        <div style="background: #e0e7ff; padding: 20px; border-radius: 12px; border-left: 4px solid #6366f1;">
+                            <h3 style="color: #4f46e5; margin-top: 0;">🎵 Multiple Staffs</h3>
+                            <p style="margin: 10px 0; color: #333;">Create multi-instrument pieces by clicking "+ Add Sheet". Organize them logically: melody on top, accompaniment below, just like traditional scores.</p>
+                        </div>
+                        
+                        <div style="background: #f0fdf4; padding: 20px; border-radius: 12px; border-left: 4px solid #22c55e;">
+                            <h3 style="color: #166534; margin-top: 0;">🔍 Zooming Strategies</h3>
+                            <p style="margin: 10px 0; color: #333;">Start at 100% zoom for overview, zoom to 150% for precise note placement, zoom out to 50% to see your entire composition layout.</p>
+                        </div>
+                        
+                        <div style="background: #fae8ff; padding: 20px; border-radius: 12px; border-left: 4px solid #d946ef;">
+                            <h3 style="color: #9d174d; margin-top: 0;">🎼 Professional Layout</h3>
+                            <p style="margin: 10px 0; color: #333;">Follow standard notation: Clef → Time Signature → Notes. Leave proper spacing between notes for readability. Use rests to maintain rhythm.</p>
+                        </div>
+                        
+                        <div style="background: #fee2e2; padding: 20px; border-radius: 12px; border-left: 4px solid #ef4444;">
+                            <h3 style="color: #991b1b; margin-top: 0;">🎶 Tempo Control</h3>
+                            <p style="margin: 10px 0; color: #333;">Adjust tempo using the slider in the control panel. Slower tempos (60-80 BPM) are ideal for learning. Faster tempos (120+ BPM) for energetic pieces.</p>
+                        </div>
+                        
+                        <div style="background: #eff6ff; padding: 20px; border-radius: 12px; border-left: 4px solid #3b82f6;">
+                            <h3 style="color: #1e40af; margin-top: 0;">💾 Auto-Save Habit</h3>
+                            <p style="margin: 10px 0; color: #333;">Build a habit of saving every 5-10 minutes. Your compositions are stored in the database and can be accessed from the Dashboard anytime.</p>
                         </div>
                     </div>
                 </section>
 
-                <!-- Notes Section -->
-                <section id="learn-notes" class="learn-section">
-                    <h2 class="learn-section-title">Notes & Timing</h2>
-                    
-                    <p class="learn-text">
-                        Notes show both pitch (how high/low) and duration (how long to play).
-                    </p>
-                    
-                    <div class="learn-notes-grid">
-                        <!-- Whole Note -->
-                        <div class="learn-note-card">
-                            <div class="learn-note-symbol">𝅝</div>
-                            <div class="learn-note-name">Whole Note</div>
-                            <div class="learn-note-duration">4 beats</div>
-                        </div>
-                        
-                        <!-- Half Note -->
-                        <div class="learn-note-card">
-                            <div class="learn-note-symbol">𝅗𝅥</div>
-                            <div class="learn-note-name">Half Note</div>
-                            <div class="learn-note-duration">2 beats</div>
-                        </div>
-                        
-                        <!-- Quarter Note -->
-                        <div class="learn-note-card">
-                            <div class="learn-note-symbol">𝅘𝅥</div>
-                            <div class="learn-note-name">Quarter Note</div>
-                            <div class="learn-note-duration">1 beat</div>
-                        </div>
-                        
-                        <!-- Eighth Note -->
-                        <div class="learn-note-card">
-                            <div class="learn-note-symbol">♪</div>
-                            <div class="learn-note-name">Eighth Note</div>
-                            <div class="learn-note-duration">½ beat</div>
-                        </div>
+                <section style="margin-top: 40px; margin-bottom: 30px;">
+                    <h2 style="color: #8b5cf6; font-size: 24px; margin-bottom: 20px;">Common Mistakes to Avoid</h2>
+                    <div style="background: #fecaca; padding: 25px; border-radius: 12px; border-left: 4px solid #dc2626;">
+                        <ul style="color: #333; margin: 10px 0; padding-left: 20px; line-height: 1.8;">
+                            <li><strong>Forgetting the clef</strong> - Always place a clef first, or notes won't be readable</li>
+                            <li><strong>Wrong clef for instrument</strong> - Use Treble (𝄞) for high notes, Bass (𝄢) for low notes</li>
+                            <li><strong>Not saving frequently</strong> - Save your work regularly to avoid data loss</li>
+                            <li><strong>Overcrowding the staff</strong> - Space your notes properly for professional appearance</li>
+                            <li><strong>Ignoring time signatures</strong> - Ensure notes fit within measure constraints</li>
+                            <li><strong>Not using zoom properly</strong> - Precision matters in music notation</li>
+                        </ul>
                     </div>
                 </section>
-
-                <!-- Footer -->
-                <div class="learn-footer">
-                    <p>Music Theory Learning Platform • Simplified for Beginners</p>
+            </div>
+            
+            <!-- Tutorials Modal (hidden by default) -->
+            <div id="tutorialModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); align-items:center; justify-content:center; z-index:1002;">
+                <div style="width:90%; max-width:1000px; background:white; border-radius:12px; overflow:hidden; box-shadow:0 20px 40px rgba(0,0,0,0.3);">
+                    <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 18px; border-bottom:1px solid #eee;">
+                        <strong style="color:#374151;">🎬 TuneCraft Tutorials</strong>
+                        <div>
+                            <button onclick="closeTutorials()" style="background:#f3f4f6; border:none; padding:8px 12px; border-radius:8px; cursor:pointer;">Close</button>
+                        </div>
+                    </div>
+                    <div style="padding:16px; display:flex; gap:16px;">
+                        <div style="flex:1 1 680px;">
+                            <div id="tutorialPlayerContainer" style="position:relative; padding-top:56.25%; background:#000;">
+                                <!-- Player (iframe for external embeds or <video> for local files) will be injected here -->
+                            </div>
+                        </div>
+                        <div style="width:260px; max-height:420px; overflow:auto;">
+                            <div id="tutorialList" style="display:flex; flex-direction:column; gap:8px;"></div>
+                        </div>
+                    </div>
                 </div>
+            </div>
+
+            <!-- Footer -->
+            <div style="text-align: center; margin-top: 60px; padding-top: 30px; border-top: 1px solid #e5e7eb;">
+                <p style="color: #999; font-size: 14px;">TuneCraft - Learn Music Theory & Compose with Ease • Simplified for Beginners</p>
             </div>
         </main>
     </div>
 
     <script>
-        // Simple navigation between sections
-        const learnNavButtons = document.querySelectorAll('.learn-nav-btn');
-        const learnSections = document.querySelectorAll('.learn-section');
-
-        learnNavButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                const sectionId = button.dataset.section;
-                
-                // Update active nav button
-                learnNavButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                
-                // Show selected section
-                learnSections.forEach(section => {
-                    section.classList.remove('active');
-                    if (section.id === `learn-${sectionId}`) {
-                        section.classList.add('active');
-                    }
+        // Wait for DOM to fully load
+        document.addEventListener('DOMContentLoaded', function() {
+            /* Tab switching functionality */
+            window.switchTab = function(tabName) {
+                // Hide all pages
+                const pages = document.querySelectorAll('.tab-page');
+                pages.forEach(page => {
+                    page.style.display = 'none';
+                    page.classList.remove('active');
                 });
-            });
-        });
 
-        // Smooth scroll to top when changing sections
-        learnNavButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-            });
-        });
+                // Remove active class from all tabs
+                const tabs = document.querySelectorAll('.nav-tab');
+                tabs.forEach(tab => tab.classList.remove('active'));
 
-        // Add keyboard navigation
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
-                const activeBtn = document.querySelector('.learn-nav-btn.active');
-                const buttons = Array.from(learnNavButtons);
-                const currentIndex = buttons.indexOf(activeBtn);
-                let nextIndex;
-                
-                if (e.key === 'ArrowRight') {
-                    nextIndex = (currentIndex + 1) % buttons.length;
-                } else if (e.key === 'ArrowLeft') {
-                    nextIndex = (currentIndex - 1 + buttons.length) % buttons.length;
+                // Show selected page
+                const selectedPage = document.getElementById(tabName + '-page');
+                if (selectedPage) selectedPage.style.display = 'block';
+
+                // Mark selected tab as active
+                const selectedTab = document.getElementById(tabName + '-tab');
+                if (selectedTab) selectedTab.classList.add('active');
+
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            };
+
+            // Hover effects for cards (visual polish)
+            const cards = document.querySelectorAll('[style*="background"]');
+            cards.forEach(card => {
+                if (card.style.borderLeft || card.style.borderTop) {
+                    card.addEventListener('mouseenter', () => {
+                        card.style.transform = 'translateY(-4px)';
+                        card.style.transition = 'transform 0.2s ease';
+                    });
+                    card.addEventListener('mouseleave', () => {
+                        card.style.transform = 'translateY(0)';
+                    });
                 }
-                
-                buttons[nextIndex].click();
-            }
+            });
+
+            // Quickstart removed; no accordion initialization required
+
+            // Tutorials modal logic
+            const tutorialModal = document.getElementById('tutorialModal');
+            const tutorialPlayerContainer = document.getElementById('tutorialPlayerContainer');
+            const tutorialList = document.getElementById('tutorialList');
+
+            // Edit this array to add your application tutorial embed URLs (YouTube embed links)
+            const tutorials = [
+                // Example YouTube embeds — replace VIDEO_IDs with your own tutorial videos
+                { title: 'Getting Started with TuneCraft', src: 'https://www.youtube.com/embed/M7lc1UVf-VE', type: 'youtube' },
+                { title: 'Placing Notes & Symbols',    src: 'https://www.youtube.com/embed/ysz5S6PUM-U', type: 'youtube' },
+                // Example local video: place an MP4 at Assets/tutorial-sample.mp4 or update the path
+                { title: 'Local: Quick Editor Tour',   src: 'Assets/tutorial.mp4', type: 'local' }
+            ];
+
+            window.openTutorials = function() {
+                // populate list
+                tutorialList.innerHTML = '';
+                let firstSrc = '';
+                function playTutorial(t) {
+                    // clear container
+                    tutorialPlayerContainer.innerHTML = '';
+                    if (!t || !t.src) return;
+
+                    if (t.type === 'local' || (!t.src.startsWith('http') && !t.src.startsWith('https'))) {
+                        // local video file
+                        const vid = document.createElement('video');
+                        vid.src = t.src;
+                        vid.controls = true;
+                        vid.autoplay = true;
+                        vid.style.position = 'absolute';
+                        vid.style.left = '0';
+                        vid.style.top = '0';
+                        vid.style.width = '100%';
+                        vid.style.height = '100%';
+                        vid.setAttribute('playsinline', '');
+                        tutorialPlayerContainer.appendChild(vid);
+                    } else {
+                        // assume external embed (YouTube etc.)
+                        const iframe = document.createElement('iframe');
+                        iframe.src = t.src + '?rel=0&autoplay=1';
+                        iframe.frameBorder = '0';
+                        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+                        iframe.allowFullscreen = true;
+                        iframe.style.position = 'absolute';
+                        iframe.style.left = '0';
+                        iframe.style.top = '0';
+                        iframe.style.width = '100%';
+                        iframe.style.height = '100%';
+                        tutorialPlayerContainer.appendChild(iframe);
+                    }
+                }
+
+                tutorials.forEach((t, idx) => {
+                    const item = document.createElement('div');
+                    item.style.display = 'flex';
+                    item.style.justifyContent = 'space-between';
+                    item.style.alignItems = 'center';
+                    item.style.padding = '8px';
+                    item.style.borderRadius = '8px';
+                    item.style.border = '1px solid #f1f1f1';
+                    item.style.cursor = 'pointer';
+                    item.innerHTML = `<span style="font-size:14px;color:#374151;">${t.title}</span>`;
+                    item.addEventListener('click', () => {
+                        playTutorial(t);
+                    });
+                    tutorialList.appendChild(item);
+                    if (!firstSrc && t && t.src) firstSrc = t;
+                });
+
+                if (firstSrc) playTutorial(firstSrc);
+                else {
+                    // show friendly message when no tutorial links are configured
+                    tutorialPlayerContainer.innerHTML = '';
+                    tutorialList.innerHTML = '<div style="color:#666; padding:12px;">No tutorial videos configured. Edit the <strong>learn.html</strong> file to add tutorial URLs in the <code>tutorials</code> array.</div>';
+                }
+
+                tutorialModal.style.display = 'flex';
+            };
+
+            window.closeTutorials = function() {
+                tutorialModal.style.display = 'none';
+                tutorialPlayer.src = '';
+            };
+
+            // close modal on outside click or Esc
+            tutorialModal.addEventListener('click', function(e) {
+                if (e.target === tutorialModal) closeTutorials();
+            });
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && tutorialModal.style.display === 'flex') closeTutorials();
+            });
+
+            // Initialize - show theory page
+            document.getElementById('theory-page').style.display = 'block';
         });
     </script>
 </body>

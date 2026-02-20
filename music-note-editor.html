@@ -439,7 +439,6 @@
     }
     // ======== END AUDIO CODE ========
 
-        // Initialize editor
        function init() {
     console.log('=== EDITOR INITIALIZED ===');
     console.log('Current URL:', window.location.href);
@@ -601,28 +600,52 @@
             symbolDiv.className = 'placed-symbol';
             symbolDiv.setAttribute('data-id', symbol.id);
             symbolDiv.style.left = `${symbol.x}px`;
-            symbolDiv.style.top = `${symbol.y}px`;
             
             // Create symbol content based on type
             let symbolContent;
             if (symbol.type === 'note') {
                 symbolContent = document.createElement('div');
                 symbolContent.style.fontSize = '3rem';
+                symbolContent.style.lineHeight = '1';
                 symbolContent.textContent = symbol.symbol;
+                // Position note naturally on the staff
+                symbolDiv.style.top = `${symbol.y}px`;
             } else if (symbol.type === 'clef') {
                 symbolContent = document.createElement('div');
-                symbolContent.style.fontSize = '2.5rem';
+                // Professional clef - spans full staff height (top to bottom lines)
+                symbolContent.style.fontSize = '8rem';
+                symbolContent.style.lineHeight = '0.75';
+                symbolContent.style.height = '210px';
+                symbolContent.style.width = '90px';
+                symbolContent.style.display = 'flex';
+                symbolContent.style.alignItems = 'center';
+                symbolContent.style.justifyContent = 'center';
+                symbolContent.style.color = '#1f2937';
+                symbolContent.style.fontWeight = '600';
                 symbolContent.textContent = symbol.symbol;
+                // Position clef to align with top staff line
+                symbolDiv.style.top = '-5px';
             } else if (symbol.type === 'time') {
                 symbolContent = document.createElement('div');
-                symbolContent.style.fontSize = '1.8rem';
-                symbolContent.style.lineHeight = '1';
+                // Professional time signature - spans full staff height
+                symbolContent.style.fontSize = '3rem';
+                symbolContent.style.fontWeight = 'bold';
+                symbolContent.style.lineHeight = '0.6';
+                symbolContent.style.height = '210px';
+                symbolContent.style.width = '70px';
+                symbolContent.style.display = 'flex';
+                symbolContent.style.alignItems = 'center';
+                symbolContent.style.justifyContent = 'center';
                 symbolContent.style.textAlign = 'center';
+                symbolContent.style.color = '#1f2937';
                 symbolContent.innerHTML = symbol.symbol.replace('/', '<br>');
+                // Position time signature to align with top staff line
+                symbolDiv.style.top = '-5px';
             } else {
                 symbolContent = document.createElement('div');
                 symbolContent.style.fontSize = '2rem';
                 symbolContent.textContent = symbol.symbol;
+                symbolDiv.style.top = `${symbol.y}px`;
             }
             
             // Add delete button
@@ -982,28 +1005,37 @@ function updateStatusBar() {
             try {
                 if (typeof comp.data === 'string') {
                     compositionData = JSON.parse(comp.data);
+                    console.log('Parsed string data:', compositionData);
                 } else {
                     compositionData = comp.data;
+                    console.log('Data was already an object:', compositionData);
                 }
             } catch (e) {
-                console.log('Parse error, creating new:', e);
+                console.error('Parse error:', e);
+                console.log('Raw comp.data:', comp.data);
                 compositionData = null;
             }
         } else {
+            console.log('No data field in composition');
             compositionData = null;
         }
         
-        // Handle the loaded data
+        // Handle the loaded data - be more flexible
         if (Array.isArray(compositionData)) {
             // The data IS the sheets array
             sheets = compositionData;
-            console.log('Loaded sheets array:', sheets);
-        } else if (compositionData && Array.isArray(compositionData.sheets)) {
+            console.log('✓ Loaded sheets array with', sheets.length, 'sheet(s)');
+        } else if (compositionData && compositionData.sheets && Array.isArray(compositionData.sheets)) {
             // Old format with sheets property
             sheets = compositionData.sheets;
-            console.log('Loaded sheets from data.sheets:', sheets);
+            console.log('✓ Loaded sheets from data.sheets property');
+        } else if (compositionData && compositionData.data && Array.isArray(compositionData.data)) {
+            // Wrapped in another data property
+            sheets = compositionData.data;
+            console.log('✓ Loaded sheets from data.data property');
         } else {
-            // Create new sheet structure
+            // Create new sheet structure if data couldn't be loaded
+            console.warn('Could not parse composition data, creating empty sheet');
             sheets = [{
                 id: 1,
                 title: "Sheet 1",
@@ -1057,11 +1089,9 @@ function updateStatusBar() {
             }
         }
 
-      // Save composition to database
-// Save composition to database
-function saveComposition() {
+      function saveComposition() {
     // Get composition ID from URL if exists
-    const urlParams = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams(window.location.href);
     const compositionId = urlParams.get('id');
     
     // Show saving indicator
@@ -1069,6 +1099,20 @@ function saveComposition() {
     const originalText = status.textContent;
     status.textContent = 'Saving...';
     status.style.color = '#8B5CF6';
+    
+    // Validate we have sheets
+    if (!sheets || sheets.length === 0) {
+        alert('ERROR: No sheets in memory! Data cannot be saved.');
+        status.textContent = originalText;
+        return;
+    }
+    
+    // Log what we're about to save
+    console.log('=== SAVE START ===');
+    console.log('Composition ID:', compositionId);
+    console.log('Sheets in memory:', sheets.length);
+    console.log('Total symbols:', sheets.reduce((sum, sheet) => sum + sheet.symbols.length, 0));
+    console.log('Full sheets data:', JSON.stringify(sheets).substring(0, 500) + '...');
     
     // Prepare data
     const saveData = {
@@ -1083,6 +1127,7 @@ function saveComposition() {
     const url = compositionId ? `api/compositions.php?id=${compositionId}` : 'api/compositions.php';
     
     console.log('Sending POST to:', url);
+    console.log('Request body size:', JSON.stringify(saveData).length, 'bytes');
     
     fetch(url, {
         method: 'POST',
@@ -1096,7 +1141,7 @@ function saveComposition() {
         
         // Get response as text first
         return response.text().then(text => {
-            console.log('Raw response:', text);
+            console.log('Raw response:', text.substring(0, 200));
             
             // Try to parse as JSON
             try {
@@ -1126,6 +1171,10 @@ function saveComposition() {
             status.textContent = 'Saved successfully! ✓';
             status.style.color = '#10B981';
             
+            console.log('=== SAVE COMPLETE ===');
+            console.log('Sheets still in memory after save:', sheets.length);
+            console.log('Total symbols still in memory:', sheets.reduce((sum, sheet) => sum + sheet.symbols.length, 0));
+            
             // If new composition, update URL
             if (data.id && !compositionId) {
                 const newUrl = new URL(window.location);
@@ -1153,6 +1202,7 @@ function saveComposition() {
     })
     .catch(error => {
         console.error('Save error:', error);
+        console.error('=== SAVE FAILED ===');
         status.textContent = 'Save failed';
         status.style.color = '#EF4444';
         
